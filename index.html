@@ -325,10 +325,21 @@ async function buyCurrent(){
   b.disabled=true;
   b.innerHTML='<i class="fa-solid fa-circle-notch fa-spin"></i> Procesando...';
   try{
-    const d=await api('create_order',{cart:[item]});
+    const d=await api('create_order',{
+      cart:[item],
+      productId:item.id,
+      quantity:item.quantity,
+      vip:item.vip,
+      price:item.price,
+      product:item.name
+    });
     if(d.user)s.user=d.user;
     if(Array.isArray(d.orders))s.orders=d.orders;
-    saveUser(s.user);update();renderOrders();
+    saveUser(s.user);
+    update();
+    renderOrders();
+    // Vuelve a consultar el backend para que 'Mis compras' refleje inmediatamente la fila creada.
+    await dashboard();
     $('checkout').classList.add('hidden');
     toast('Compra realizada correctamente.');
     switchTab('orders');
@@ -347,10 +358,16 @@ async function checkoutCart(){
   b.disabled=true;
   b.innerHTML='<i class="fa-solid fa-circle-notch fa-spin"></i> Procesando...';
   try{
-    const d=await api('create_order',{cart:s.cart.map(c=>({...c,promo:''}))});
+    const cart=s.cart.map(c=>({...c,promo:''}));
+    const d=await api('create_order',{cart});
     if(d.user)s.user=d.user;
     if(Array.isArray(d.orders))s.orders=d.orders;
-    saveUser(s.user);update();renderOrders();s.cart=[];renderCart();
+    saveUser(s.user);
+    update();
+    renderOrders();
+    s.cart=[];
+    renderCart();
+    await dashboard();
     $('cartModal').classList.add('hidden');
     toast('Compra del carrito realizada correctamente.');
     switchTab('orders');
