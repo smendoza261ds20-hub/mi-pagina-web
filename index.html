@@ -58,18 +58,18 @@ main{padding:30px 0 70px}.section{display:block}.section.hidden{display:none!imp
     <div id="loginView" class="hidden">
       <button type="button" data-back class="back"><i class="fa-solid fa-arrow-left"></i> Volver</button>
       <form id="loginForm" class="form"><h3>Iniciar sesión</h3>
-        <input id="loginPhone" class="field" required inputmode="numeric" placeholder="WhatsApp (9 dígitos)">
-        <input id="loginPassword" class="field" required type="password" placeholder="Contraseña">
+        <input id="loginUsername" class="field" required autocomplete="username" placeholder="Username">
+        <input id="loginPassword" class="field" required type="password" autocomplete="current-password" placeholder="Contraseña">
         <button id="loginBtn" type="submit" class="btn btn-primary">Entrar</button>
       </form>
     </div>
     <div id="registerView" class="hidden">
       <button type="button" data-back class="back"><i class="fa-solid fa-arrow-left"></i> Volver</button>
       <form id="registerForm" class="form"><h3>Crear cuenta</h3>
-        <input id="registerName" class="field" required placeholder="Nombre completo">
-        <input id="registerPhone" class="field" required inputmode="numeric" placeholder="WhatsApp (9 dígitos)">
-        <input id="registerPassword" class="field" required minlength="6" type="password" placeholder="Contraseña (mín. 6)">
-        <input id="registerPassword2" class="field" required minlength="6" type="password" placeholder="Repite la contraseña">
+        <input id="registerUsername" class="field" required autocomplete="username" placeholder="Username">
+        <input id="registerEmail" class="field" required type="email" autocomplete="email" placeholder="Correo electrónico">
+        <input id="registerPassword" class="field" required minlength="6" type="password" autocomplete="new-password" placeholder="Contraseña (mín. 6)">
+        <input id="registerPassword2" class="field" required minlength="6" type="password" autocomplete="new-password" placeholder="Repite la contraseña">
         <button id="registerBtn" type="submit" class="btn btn-primary">Crear cuenta</button>
       </form>
     </div>
@@ -91,7 +91,7 @@ main{padding:30px 0 70px}.section{display:block}.section.hidden{display:none!imp
       <div class="account-info"><div class="avatar"><i class="fa-solid fa-user"></i></div></div>
       <div class="account-info"><div id="headerGreeting" style="font-size:10px;font-weight:900">Hola, Invitado</div><div id="headerSub" style="font-size:8px;color:#64748b;margin-top:2px">Inicia sesión para continuar</div></div>
       <button id="headerLogin" type="button" class="account-btn">Iniciar sesión</button>
-      <button id="headerRegister" type="button" class="account-btn primary">Registrarse</button>
+      <button id="headerRegister" type="button" class="account-btn primary">Registrarse</button><button id="cartHeader" type="button" class="account-btn" title="Carrito"><i class="fa-solid fa-cart-shopping"></i> <span id="cartCount">0</span></button>
       <span id="headerBalance" class="balance hidden">S/ 0.00</span>
       <button id="logout" type="button" class="logout hidden" aria-label="Cerrar sesión"><i class="fa-solid fa-right-from-bracket"></i></button>
     </div>
@@ -124,7 +124,7 @@ main{padding:30px 0 70px}.section{display:block}.section.hidden{display:none!imp
           <div class="payment-row">🟠 <b>BCP:</b> <span class="mono">28518526104002</span> <span style="color:#64748b;font-size:8px">(CCI: 00228511852610400254)</span></div>
           <div class="payment-row">🟡 <b>Binance ID:</b> <span class="mono">560926309</span> <span style="color:#64748b">|</span> <b>PayPal:</b> <span class="mono">andrechavez0008@gmail.com</span></div>
         </div>
-        <form id="topupForm" class="form-grid"><input id="amount" class="field" min="1" step=".01" type="number" placeholder="Monto enviado (S/)" required><select id="method" class="field"><option>Yape / Plin</option><option>Transferencia BCP</option><option>Binance</option><option>PayPal</option></select><input id="voucher" class="field file" type="file" accept="image/*" required><button id="topupBtn" type="submit" class="btn btn-green"><i class="fa-solid fa-paper-plane"></i> Enviar comprobante</button></form>
+        <form id="topupForm" class="form-grid"><input id="amount" class="field" min="1" step=".01" type="number" placeholder="Monto enviado (S/)" required><select id="method" class="field"><option>Yape / Plin</option><option>Transferencia BCP</option><option>Binance</option><option>PayPal</option></select><input id="opCode" class="field" inputmode="numeric" placeholder="N° de Operación" required><button id="topupBtn" type="submit" class="btn btn-green"><i class="fa-solid fa-paper-plane"></i> Notificar recarga</button></form>
       </div>
       <div class="panel panel-pad"><div class="panel-title">Promociones de recarga</div><div class="panel-sub">Se administran desde Google Sheets.</div><div id="promos" class="promo-list"></div></div>
     </div>
@@ -132,10 +132,10 @@ main{padding:30px 0 70px}.section{display:block}.section.hidden{display:none!imp
   </section>
   <section id="view-orders" class="section hidden"><div class="panel panel-pad"><div class="panel-title">Mis compras</div><div class="panel-sub">Tus pedidos quedan ligados a tu cuenta.</div></div><div id="orders" class="orders-list"></div></section>
 </main>
-<div id="checkout" class="modal hidden"><div class="modal-card"><div class="product-head"><img id="productImg" class="modal-img" alt="Servicio"><div><div id="productName" class="modal-name">Servicio</div><div id="productType" class="modal-type">Plan</div></div></div><div class="modal-body"><div id="benefits" class="benefits-text"></div><div id="tierWrap" class="hidden"><label class="label" style="display:block;margin-bottom:7px">Tarifa</label><select id="tier" class="field"></select></div><input id="qty" class="field qty" min="1" max="99" type="number" value="1"><div class="total-box"><div><div style="font-size:9px;color:#94a3b8">Total</div><div id="totalUSD" class="total-usd">$0.00 USD</div></div><div style="text-align:right"><div id="totalPEN" class="total-pen">S/ 0.00</div><div id="after" class="after"></div></div></div><button id="buyBtn" type="button" class="btn btn-primary" style="width:100%;padding:14px">Comprar con mi saldo</button><button id="closeCheckout" type="button" class="cancel">Cancelar</button></div></div></div>
+<div id="cartModal" class="modal hidden"><div class="modal-card"><div style="display:flex;justify-content:space-between;align-items:center"><div class="panel-title">Tu carrito</div><button id="closeCart" class="cancel">Cerrar</button></div><div id="cartItems" class="orders-list" style="margin-top:14px"></div><div class="total-box" style="margin-top:14px"><span>Total</span><strong id="cartTotal" class="total-pen">S/ 0.00</strong></div><button id="cartBuyBtn" class="btn btn-primary" style="width:100%;margin-top:12px">Pagar carrito</button></div></div><div id="checkout" class="modal hidden"><div class="modal-card"><div class="product-head"><img id="productImg" class="modal-img" alt="Servicio"><div><div id="productName" class="modal-name">Servicio</div><div id="productType" class="modal-type">Plan</div></div></div><div class="modal-body"><div id="benefits" class="benefits-text"></div><div id="tierWrap" class="hidden"><label class="label" style="display:block;margin-bottom:7px">Tarifa</label><select id="tier" class="field"></select></div><input id="qty" class="field qty" min="1" max="99" type="number" value="1"><div class="total-box"><div><div style="font-size:9px;color:#94a3b8">Total</div><div id="totalUSD" class="total-usd">$0.00 USD</div></div><div style="text-align:right"><div id="totalPEN" class="total-pen">S/ 0.00</div><div id="after" class="after"></div></div></div><button id="addCartBtn" type="button" class="btn btn-soft" style="width:100%;padding:14px"><i class="fa-solid fa-cart-plus"></i> Agregar al carrito</button><button id="buyBtn" type="button" class="btn btn-primary" style="width:100%;padding:14px">Comprar con mi saldo</button><button id="closeCheckout" type="button" class="cancel">Cancelar</button></div></div></div>
 <a class="whatsapp" href="https://wa.me/51929683085?text=Hola%20Andre,%20quiero%20saber%20c%C3%B3mo%20tener%20acceso%20a%20los%20precios%20VIP" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
 <script>
-const C={URL:'https://script.google.com/macros/s/AKfycbxtv1oUbqBIHqo3o1rXkySYqwjjgLANvROLMV1_QygmewaJHyJLyQdehSG4A8Yf9oGuZg/exec',KEY:'andre_session_v6',USERKEY:'andre_user_v6',LEGACY_KEYS:['andre_session_v5','andre_session_v4'],LEGACY_USERS:['andre_user_v5','andre_user_v4'],CACHE:'andre_catalog_v5',CACHE_TS:'andre_catalog_v5_ts',TIMEOUT:25000,MAX:4,PLACEHOLDER:'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 320 180%22%3E%3Crect width=%22320%22 height=%22180%22 rx=%2226%22 fill=%22%23030817%22/%3E%3Ctext x=%22160%22 y=%2292%22 fill=%22%23818cf8%22 font-family=%22Arial%22 font-size=%2234%22 font-weight=%22900%22 text-anchor=%22middle%22%3EAS%3C/text%3E%3C/svg%3E'};
+const C={URL:'https://script.google.com/macros/s/AKfycbwkVPVCnWFOwkdz426Lh-hJ9L_ZjhAKpI0pm2ifDKWwNf3n9fHzHSBcjq4lj_MLk7RZSQ/exec',KEY:'andre_session_v6',USERKEY:'andre_user_v6',LEGACY_KEYS:['andre_session_v5','andre_session_v4'],LEGACY_USERS:['andre_user_v5','andre_user_v4'],CACHE:'andre_catalog_v5',CACHE_TS:'andre_catalog_v5_ts',TIMEOUT:25000,MAX:4,PLACEHOLDER:'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 320 180%22%3E%3Crect width=%22320%22 height=%22180%22 rx=%2226%22 fill=%22%23030817%22/%3E%3Ctext x=%22160%22 y=%2292%22 fill=%22%23818cf8%22 font-family=%22Arial%22 font-size=%2234%22 font-weight=%22900%22 text-anchor=%22middle%22%3EAS%3C/text%3E%3C/svg%3E'};
 let storedToken='',storedUser=null;
 try{
   storedToken=localStorage.getItem(C.KEY)||'';
@@ -143,7 +143,7 @@ try{
   const rawUser=localStorage.getItem(C.USERKEY)||C.LEGACY_USERS.map(k=>localStorage.getItem(k)||'').find(Boolean)||'';
   storedUser=rawUser?JSON.parse(rawUser):null;
 }catch{}
-const s={token:String(storedToken||''),user:storedUser,catalog:[],orders:[],topups:[],promos:[],product:null,cat:'Todos',busy:false};
+const s={token:String(storedToken||''),user:storedUser,catalog:[],orders:[],topups:[],promos:[],product:null,cart:[],cat:'Todos',busy:false};
 const $=id=>document.getElementById(id);
 const num=v=>Number(v)||0;
 const money=v=>`S/ ${num(v).toFixed(2)}`;
@@ -283,60 +283,107 @@ function renderTopups(){$('topupCount').textContent=s.topups.length;$('topups').
 function renderOrders(){$('orders').innerHTML=s.orders.length?s.orders.map(x=>`<div class="order-item"><div class="order-meta">${esc(x.id||'')} · ${esc(x.fecha||'')}</div><div class="order-name">${esc(x.producto||'')}</div><div class="order-detail">${esc(x.total||'')} · ${esc(x.estado||'')}</div></div>`).join(''):'<div class="empty">Aún no tienes compras.</div>'}
 function openBuy(id){const p=s.catalog.find(x=>x.id===Number(id));if(!p)return;if(!s.user||!s.token){auth('login');return}s.product=p;$('productImg').src=p.imagen;$('productImg').style.display='block';$('productImg').onerror=()=>{ $('productImg').onerror=null;$('productImg').src=C.PLACEHOLDER};$('productName').textContent=p.plataforma;$('productType').textContent=p.tipo;$('benefits').textContent=p.beneficios;$('tier').innerHTML=`<option value="regular">Regular · ${money(p.precioUSD*p.tipoCambio)}</option>`;if(p.precioVIP>0&&p.precioVIP<p.precioUSD){$('tier').insertAdjacentHTML('beforeend',`<option value="vip">VIP · ${money(p.precioVIP*p.tipoCambio)}</option>`);$('tierWrap').classList.remove('hidden')}else $('tierWrap').classList.add('hidden');$('qty').value=1;calc();$('checkout').classList.remove('hidden')}
 function calc(){if(!s.product||!s.user)return;const p=s.product,q=Math.max(1,Math.min(99,Math.floor(num($('qty').value)||1))),vip=$('tier').value==='vip'&&p.precioVIP>0,usd=(vip?p.precioVIP:p.precioUSD)*q,pen=usd*(p.tipoCambio||3.3607),bal=num(s.user.saldo);$('qty').value=q;$('totalUSD').textContent=`$${usd.toFixed(2)} USD`;$('totalPEN').textContent=money(pen);$('after').textContent=`Saldo después: ${money(bal-pen)}`}
-async function buy(){if(!s.product)return;if(!s.user||!s.token){auth('login');return}const p=s.product,q=Math.max(1,Math.min(99,Math.floor(num($('qty').value)||1))),vip=$('tier').value==='vip'&&p.precioVIP>0,pen=(vip?p.precioVIP:p.precioUSD)*q*(p.tipoCambio||3.3607);if(num(s.user.saldo)<pen)return alert('Saldo insuficiente.');const b=$('buyBtn');b.disabled=true;b.innerHTML='<i class="fa-solid fa-circle-notch fa-spin"></i> Procesando...';try{const d=await api('create_order',{productId:p.id,quantity:q,vip});if(d.user)s.user=d.user;s.orders=Array.isArray(d.orders)?d.orders:s.orders;saveUser(s.user);update();renderOrders();$('checkout').classList.add('hidden');alert('Compra realizada.');switchTab('orders')}catch(e){if(e.code==='AUTH_EXPIRED'){clearSession();auth('login');alert('La sesión expiró. Inicia sesión nuevamente.')}else alert(e.message||'No se pudo completar la compra.')}finally{b.disabled=false;b.innerHTML='Comprar con mi saldo'}}
+function addCurrentToCart(){
+  if(!s.product)return;
+  if(!s.user||!s.token){auth('login');return}
+  const p=s.product,q=Math.max(1,Math.min(99,Math.floor(num($('qty').value)||1))),vip=$('tier').value==='vip'&&p.precioVIP>0;
+  const item={id:p.id,name:p.plataforma,price:(vip?p.precioVIP:p.precioUSD)*(p.tipoCambio||3.3607),promo:'',quantity:q,vip};
+  const existing=s.cart.find(x=>x.id===item.id&&x.vip===item.vip);
+  if(existing)existing.quantity+=q; else s.cart.push(item);
+  renderCart();
+  toast(`Agregado al carrito: ${p.plataforma}`);
+  $('checkout').classList.add('hidden');
+}
+async function buy(){
+  if(!s.user||!s.token){auth('login');return}
+  if(s.cart.length===0 && s.product){
+    const p=s.product,q=Math.max(1,Math.min(99,Math.floor(num($('qty').value)||1))),vip=$('tier').value==='vip'&&p.precioVIP>0;
+    s.cart=[{id:p.id,name:p.plataforma,price:(vip?p.precioVIP:p.precioUSD)*(p.tipoCambio||3.3607),promo:'',quantity:q,vip}];
+  }
+  if(!s.cart.length)return toast('No hay productos para comprar.');
+  const total=s.cart.reduce((a,c)=>a+num(c.price)*(num(c.quantity)||1),0);
+  if(num(s.user.saldo)<total)return toast('Saldo insuficiente.');
+  const b=$('buyBtn');b.disabled=true;b.innerHTML='<i class="fa-solid fa-circle-notch fa-spin"></i> Procesando...';
+  try{
+    const promo='';
+    const cart=s.cart.map(c=>({...c,promo}));
+    const d=await api('create_order',{cart});
+    if(d.user)s.user=d.user;
+    if(Array.isArray(d.orders))s.orders=d.orders;
+    saveUser(s.user);update();renderOrders();s.cart=[];
+    $('checkout').classList.add('hidden');
+    toast('Compra realizada correctamente.');
+    switchTab('orders');
+  }catch(e){
+    if(e.code==='AUTH_EXPIRED'){clearSession();auth('login');toast('La sesión expiró. Inicia sesión nuevamente.')}
+    else toast(e.message||'No se pudo completar la compra.');
+  }finally{b.disabled=false;b.innerHTML='Comprar con mi saldo'}
+}
+
 async function topup(e){
   e.preventDefault();
   if(!s.user||!s.token){auth('login');return}
-  const file=$('voucher').files?.[0],amt=num($('amount').value);
-  if(!amt||amt<=0)return alert('Monto inválido.');
-  if(!file||!/^image\//.test(file.type)||file.size>C.MAX*1024*1024)return alert(`Imagen inválida. Máximo ${C.MAX} MB.`);
+  const amt=num($('amount').value),opCode=$('opCode').value.trim();
+  if(!amt||amt<=0)return toast('Monto inválido.');
+  if(!opCode)return toast('Ingresa el número de operación.');
   const b=$('topupBtn');b.disabled=true;b.innerHTML='<i class="fa-solid fa-circle-notch fa-spin"></i> Enviando...';
   try{
-    const data=await new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(r.result);r.onerror=()=>no(Error('No se pudo leer el voucher'));r.readAsDataURL(file)});
-    const d=await api('create_topup',{amount:amt,method:$('method').value,imageBase64:data,imageName:'Recarga_'+phone(s.user.telefono)+'_'+Date.now()});
+    const d=await api('create_topup',{amount:amt,opCode,method:$('method').value});
     $('topupForm').reset();
-    alert((d?.message||'Recarga registrada correctamente.')+'\n\nEstado: Pendiente.');
-    await dashboard();
+    if(Array.isArray(d.topups))s.topups=d.topups;
+    renderTopups();
+    toast(d?.message||'Recarga notificada correctamente.');
   }catch(e){
-    if(e.code==='AUTH_EXPIRED'){clearSession();auth('login');alert('La sesión expiró. Inicia sesión nuevamente para enviar el comprobante.')}
-    else alert(e.message||'No se pudo enviar el comprobante.');
-  }finally{b.disabled=false;b.innerHTML='<i class="fa-solid fa-paper-plane"></i> Enviar comprobante'}
+    if(e.code==='AUTH_EXPIRED'){clearSession();auth('login');toast('La sesión expiró. Inicia sesión nuevamente.')}
+    else toast(e.message||'No se pudo notificar la recarga.');
+  }finally{b.disabled=false;b.innerHTML='<i class="fa-solid fa-paper-plane"></i> Notificar recarga'}
 }
+
 async function login(e){
   e.preventDefault();
-  const b=$('loginBtn'),p=phone($('loginPhone').value),pw=$('loginPassword').value;
-  if(p.length!==9)return alert('WhatsApp inválido.');
+  const b=$('loginBtn'),username=$('loginUsername').value.trim(),pw=$('loginPassword').value;
+  if(!username||!pw)return toast('Completa username y contraseña.');
   b.disabled=true;b.textContent='Ingresando...';
   try{
-    const d=await api('login',{phone:p,password:pw},false);
+    const d=await api('login',{username,password:pw},false);
     const token=String(d?.token||'').trim();
-    if(!token)throw Error('El servidor no devolvió el token de sesión. Revisa que hayas desplegado la versión actual del Apps Script.');
-    save(token,d.user||{telefono:p});
+    if(!token)throw Error('El servidor no devolvió el token de sesión.');
+    save(token,d.user||{username});
     update();
     hideAuth();
-    dashboard().then(ok=>{if(!ok)toast('La cuenta entró, pero Google Sheets todavía está sincronizando.');});
+    toast(`Hola ${d.user?.nombre||d.user?.username||username}`);
+    dashboard().catch(()=>{});
   }catch(x){toast(x.message||'No se pudo iniciar sesión.')}
   finally{b.disabled=false;b.textContent='Entrar'}
 }
 async function register(e){
   e.preventDefault();
-  const b=$('registerBtn'),name=$('registerName').value.trim(),p=phone($('registerPhone').value),pw=$('registerPassword').value,pw2=$('registerPassword2').value;
-  if(name.length<2||p.length!==9||pw.length<6||pw!==pw2)return alert('Revisa los datos.');
+  const b=$('registerBtn'),username=$('registerUsername').value.trim(),correo=$('registerEmail').value.trim(),pw=$('registerPassword').value,pw2=$('registerPassword2').value;
+  if(username.length<3||!correo||pw.length<6||pw!==pw2)return toast('Revisa los datos del registro.');
   b.disabled=true;b.textContent='Creando...';
   try{
-    const d=await api('register',{name,phone:p,password:pw},false);
+    const d=await api('register',{username,correo,password:pw},false);
     const token=String(d?.token||'').trim();
-    if(!token)throw Error('El servidor no devolvió el token de sesión. Revisa el despliegue del Apps Script.');
-    save(token,d.user||{nombre:name,telefono:p,saldo:0});
+    if(!token)throw Error('El servidor no devolvió el token de sesión.');
+    save(token,d.user||{username,correo,saldo:0});
     update();
     hideAuth();
-    toast('Cuenta creada correctamente.');
+    toast(`Cuenta creada. Hola ${d.user?.nombre||username}`);
     dashboard().catch(()=>{});
   }catch(x){toast(x.message||'No se pudo crear la cuenta.')}
   finally{b.disabled=false;b.textContent='Crear cuenta'}
 }
+
+function renderCart(){
+  const count=s.cart.reduce((a,c)=>a+(num(c.quantity)||1),0);
+  $('cartCount').textContent=count;
+  const total=s.cart.reduce((a,c)=>a+num(c.price)*(num(c.quantity)||1),0);
+  if($('cartTotal'))$('cartTotal').textContent=money(total);
+  if($('cartItems'))$('cartItems').innerHTML=s.cart.length?s.cart.map((c,i)=>`<div class="order-item" style="display:flex;justify-content:space-between;align-items:center;gap:10px"><div><div class="order-name" style="margin:0">${esc(c.name)}</div><div class="order-detail">${c.quantity} × ${money(c.price)}</div></div><button class="cancel" data-remove-cart="${i}"><i class="fa-solid fa-trash"></i></button></div>`).join(''):'<div class="empty">Tu carrito está vacío.</div>';
+}
+function openCart(){renderCart();$('cartModal').classList.remove('hidden')}
 function logout(){clearSession();auth('chooser');switchTab('catalog')}
-document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('[data-auth]').forEach(b=>b.addEventListener('click',()=>auth(b.dataset.auth)));document.querySelectorAll('[data-back]').forEach(b=>b.addEventListener('click',()=>auth('chooser')));document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab,b)));document.querySelectorAll('[data-cat]').forEach(b=>b.addEventListener('click',()=>{s.cat=b.dataset.cat;document.querySelectorAll('.cat').forEach(x=>x.classList.toggle('active',x===b));renderCatalog()}));$('search').addEventListener('input',renderCatalog);$('catalog').addEventListener('click',e=>{const b=e.target.closest('[data-buy]');if(b&&!b.disabled)openBuy(b.dataset.buy)});$('catalogError').addEventListener('click',e=>{if(e.target.closest('#retry'))loadCatalog()});$('qty').addEventListener('input',calc);$('tier').addEventListener('change',calc);$('loginForm').addEventListener('submit',login);$('registerForm').addEventListener('submit',register);$('topupForm').addEventListener('submit',topup);$('buyBtn').addEventListener('click',buy);$('refresh').addEventListener('click',dashboard);$('logout').addEventListener('click',logout);$('brand').addEventListener('click',()=>switchTab('catalog'));$('headerLogin').addEventListener('click',()=>auth('login'));$('headerRegister').addEventListener('click',()=>auth('register'));$('closeCheckout').addEventListener('click',()=>$('checkout').classList.add('hidden'));$('checkout').addEventListener('click',e=>{if(e.target===$('checkout'))$('checkout').classList.add('hidden')});document.addEventListener('keydown',e=>{if(e.key==='Escape')$('checkout').classList.add('hidden')});update();previewMode();if(new URLSearchParams(location.search).has('preview'))return;hydrateCatalogCache();if(!s.catalog.length)renderSkeleton(8);$('loading').classList.add('hidden');if(s.user&&s.token){update();hideAuth();dashboard().catch(()=>{})}else auth('chooser');loadCatalog();setInterval(()=>{if(s.user&&s.token&&!s.busy)dashboard().catch(()=>{})},60000)});
+document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('[data-auth]').forEach(b=>b.addEventListener('click',()=>auth(b.dataset.auth)));document.querySelectorAll('[data-back]').forEach(b=>b.addEventListener('click',()=>auth('chooser')));document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab,b)));document.querySelectorAll('[data-cat]').forEach(b=>b.addEventListener('click',()=>{s.cat=b.dataset.cat;document.querySelectorAll('.cat').forEach(x=>x.classList.toggle('active',x===b));renderCatalog()}));$('search').addEventListener('input',renderCatalog);$('catalog').addEventListener('click',e=>{const b=e.target.closest('[data-buy]');if(b&&!b.disabled)openBuy(b.dataset.buy)});$('catalogError').addEventListener('click',e=>{if(e.target.closest('#retry'))loadCatalog()});$('qty').addEventListener('input',calc);$('tier').addEventListener('change',calc);$('loginForm').addEventListener('submit',login);$('registerForm').addEventListener('submit',register);$('topupForm').addEventListener('submit',topup);$('buyBtn').addEventListener('click',buy);$('addCartBtn').addEventListener('click',addCurrentToCart);$('refresh').addEventListener('click',dashboard);$('logout').addEventListener('click',logout);$('brand').addEventListener('click',()=>switchTab('catalog'));$('headerLogin').addEventListener('click',()=>auth('login'));$('headerRegister').addEventListener('click',()=>auth('register'));$('closeCheckout').addEventListener('click',()=>$('checkout').classList.add('hidden'));$('checkout').addEventListener('click',e=>{if(e.target===$('checkout'))$('checkout').classList.add('hidden')});$('cartHeader')?.addEventListener('click',openCart);$('closeCart')?.addEventListener('click',()=>$('cartModal').classList.add('hidden'));$('cartBuyBtn')?.addEventListener('click',async()=>{ $('cartModal').classList.add('hidden'); await buy();});$('cartItems')?.addEventListener('click',e=>{const b=e.target.closest('[data-remove-cart]');if(b){s.cart.splice(Number(b.dataset.removeCart),1);renderCart()}});document.addEventListener('keydown',e=>{if(e.key==='Escape')$('checkout').classList.add('hidden')});update();renderCart();previewMode();if(new URLSearchParams(location.search).has('preview'))return;hydrateCatalogCache();if(!s.catalog.length)renderSkeleton(8);$('loading').classList.add('hidden');if(s.user&&s.token){update();hideAuth();dashboard().catch(()=>{})}else auth('chooser');loadCatalog();setInterval(()=>{if(s.user&&s.token&&!s.busy)dashboard().catch(()=>{})},60000)});
 </script>
 </body>
 </html>
