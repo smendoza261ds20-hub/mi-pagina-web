@@ -136,8 +136,7 @@ main{padding:30px 0 70px}.section{display:block}.section.hidden{display:none!imp
 <div id="cartModal" class="modal hidden"><div class="modal-card"><div style="display:flex;justify-content:space-between;align-items:center"><div class="panel-title">Tu carrito</div><button id="closeCart" class="cancel">Cerrar</button></div><div id="cartItems" class="orders-list" style="margin-top:14px"></div><div class="total-box" style="margin-top:14px"><span>Total</span><strong id="cartTotal" class="total-pen">S/ 0.00</strong></div><button id="cartBuyBtn" class="btn btn-primary" onclick="checkoutCart()" style="width:100%;margin-top:12px">Pagar carrito</button></div></div><div id="checkout" class="modal hidden"><div class="modal-card"><div class="product-head"><img id="productImg" class="modal-img" alt="Servicio"><div><div id="productName" class="modal-name">Servicio</div><div id="productType" class="modal-type">Plan</div></div></div><div class="modal-body"><div id="benefits" class="benefits-text"></div><div id="tierWrap" class="hidden"><label class="label" style="display:block;margin-bottom:7px">Tarifa</label><select id="tier" class="field"></select></div><input id="qty" class="field qty" min="1" max="99" type="number" value="1"><div class="total-box"><div><div style="font-size:9px;color:#94a3b8">Total</div><div id="totalUSD" class="total-usd">$0.00 USD</div></div><div style="text-align:right"><div id="totalPEN" class="total-pen">S/ 0.00</div><div id="after" class="after"></div></div></div><button id="addCartBtn" type="button" class="btn btn-soft" style="width:100%;padding:14px"><i class="fa-solid fa-cart-plus"></i> Agregar al carrito</button><button id="buyBtn" type="button" class="btn btn-primary" onclick="buyCurrent()" style="width:100%;padding:14px">Comprar con mi saldo</button><button id="closeCheckout" type="button" class="cancel">Cancelar</button></div></div></div>
 <a class="whatsapp" href="https://wa.me/51929683085?text=Hola%20Andre,%20quiero%20saber%20c%C3%B3mo%20tener%20acceso%20a%20los%20precios%20VIP" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
 <script>
-const C={URL:'https://script.google.com/macros/s/AKfycbwkVPVCnWFOwkdz426Lh-hJ9L_ZjhAKpI0pm2ifDKWwNf3n9fHzHSBcjq4lj_MLk7RZSQ/exec',KEY:'andre_session_v6',USERKEY:'andre_user_v6',LEGACY_KEYS:['andre_session_v5','andre_session_v4'],LEGACY_USERS:['andre_user_v5','andre_user_v4'],CACHE:'andre_catalog_v6',CACHE_TS:'andre_catalog_v6_ts',TIMEOUT:25000,MAX:4,PLACEHOLDER:'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 320 180%22%3E%3Crect width=%22320%22 height=%22180%22 rx=%2226%22 fill=%22%23030817%22/%3E%3Ctext x=%22160%22 y=%2292%22 fill=%22%23818cf8%22 font-family=%22Arial%22 font-size=%2234%22 font-weight=%22900%22 text-anchor=%22middle%22%3EAS%3C/text%3E%3C/svg%3E'};
-let storedToken='',storedUser=null;
+const C={URL:'https://script.google.com/macros/s/AKfycbzTHODgfrzLhKrzXpZKrfcODxMxSczHHc7tIuKC2dOlVgHBcuDkEs94hc2ymQ8B3v7SsQ/exec',KEY:'andre_session_v6',USERKEY:'andre_user_v6',LEGACY_KEYS:['andre_session_v5','andre_session_v4'],LEGACY_USERS:['andre_user_v5','andre_user_v4'],CACHE:'andre_catalog_v6',CACHE_TS:'andre_catalog_v6_ts',TIMEOUT:25000,MAX:4,PLACEHOLDER:'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 320 180%22%3E%3Crect width=%22320%22 height=%22180%22 rx=%2226%22 fill=%22%23030817%22/%3E%3Ctext x=%22160%22 y=%2292%22 fill=%22%23818cf8%22 font-family=%22Arial%22 font-size=%2234%22 font-weight=%22900%22 text-anchor=%22middle%22%3EAS%3C/text%3E%3C/svg%3E'};
 try{
   storedToken=localStorage.getItem(C.KEY)||'';
   if(!storedToken){for(const k of C.LEGACY_KEYS){const v=localStorage.getItem(k)||'';if(v){storedToken=v;break}}}
@@ -183,7 +182,27 @@ function hideAuth(){$('authGate').classList.add('hidden')}
 function previewMode(){return false}
 function toast(msg){const n=document.createElement('div');n.textContent=msg;n.style.cssText='position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:9999;padding:11px 16px;border-radius:12px;background:#0f172a;color:#fff;border:1px solid rgba(148,163,184,.18);box-shadow:0 14px 35px rgba(0,0,0,.35);font:800 12px system-ui;max-width:min(92vw,520px);text-align:center';document.body.appendChild(n);setTimeout(()=>n.remove(),3200)}
 function showError(msg){$('catalogError').innerHTML=`<div class="error-box"><div style="font-weight:900;color:#fde68a;font-size:11px"><i class="fa-solid fa-triangle-exclamation"></i> No se pudo sincronizar ahora.</div><div style="margin-top:5px;color:#94a3b8;font-size:9px;line-height:1.5">${esc(msg||'Comprueba tu conexión e inténtalo de nuevo.')}</div><button type="button" id="retry" class="btn btn-soft" style="margin-top:12px">Reintentar</button></div>`;$('catalogError').classList.remove('hidden')}
-async function api(action,data={},need=true){const ctrl=new AbortController();const tm=setTimeout(()=>ctrl.abort(),C.TIMEOUT);const body={action,...data};if(need&&s.token){body.token=s.token}try{const r=await fetch(C.URL,{method:'POST',body:JSON.stringify(body),cache:'no-store',signal:ctrl.signal});if(!r.ok)throw Error('HTTP '+r.status);const j=await r.json();if(j?.success===false){const err=Error(j.message||'Operación rechazada.');err.code=j.code||'';err.action=action;throw err}return j}catch(e){if(e.name==='AbortError')throw Error('El servidor de Google Sheets está tardando en responder. La página seguirá usando los datos guardados mientras sincroniza.');throw e}finally{clearTimeout(tm)}}
+async function api(action,data={},need=true){
+  const ctrl=new AbortController();
+  const tm=setTimeout(()=>ctrl.abort(),C.TIMEOUT);
+  const body={action,...data};
+  if(need&&s.token)body.token=s.token;
+  try{
+    const r=await fetch(C.URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body),cache:'no-store',signal:ctrl.signal});
+    if(!r.ok)throw Error('HTTP '+r.status);
+    const text=await r.text();
+    let j;
+    try{j=JSON.parse(text)}catch{
+      if(/Script function not found: doGet/i.test(text))throw Error('Tu Apps Script no tiene doGet. El catálogo ya está preparado para usar POST; revisa que esté publicado como aplicación web y tenga doPost.');
+      throw Error('Google Apps Script no devolvió JSON. Revisa doPost y el despliegue de la versión /exec.');
+    }
+    if(j?.success===false){const err=Error(j.message||'Operación rechazada.');err.code=j.code||'';err.action=action;throw err}
+    return j;
+  }catch(e){
+    if(e.name==='AbortError')throw Error('Google Sheets está tardando demasiado en responder.');
+    throw e;
+  }finally{clearTimeout(tm)}
+}
 function mapCatalog(rows){return Array.isArray(rows)?rows.map((x,i)=>({id:i+1,plataforma:String(x.Plataforma??'Servicio'),tipo:String(x.Tipo??'Suscripción'),categoria:String(x.Categoria??'Streaming'),precioUSD:num(x.Precio_USD),precioVIP:num(x.Precio_VIP_USD),tipoCambio:num(x.Tipo_Cambio)||3.3607,estado:String(x.Estado??'Disponible'),imagen:String(x.Imagen_URL||C.PLACEHOLDER),beneficios:String(x.Beneficios??'Acceso premium.'),dificultades:String(x.Advertencias??'')})).filter(x=>x.precioUSD>0):[]}
 function hydrateCatalogCache(){
   let cached='';
@@ -231,27 +250,28 @@ async function loadCatalog(){
   if(!hasCache)renderSkeleton(8);
   loader.classList.add('hidden');
   try{
-    const ctrl=new AbortController();
-    const tm=setTimeout(()=>ctrl.abort(),C.TIMEOUT);
-    const r=await fetch(C.URL+'?v='+Math.floor(Date.now()/60000),{cache:'no-store',signal:ctrl.signal});
-    if(!r.ok)throw Error('HTTP '+r.status);
-    const d=await r.json();
-    const mapped=mapCatalog(d.catalog);
+    // Este Apps Script NO expone doGet; todo el catálogo se solicita por POST.
+    // El backend que compartiste ya usa get_dashboard sin token para devolver el catálogo público.
+    const d=await api('get_dashboard',{},false);
+    const rawCatalog=Array.isArray(d?.catalog)?d.catalog:Array.isArray(d?.data?.catalog)?d.data.catalog:[];
+    const mapped=mapCatalog(rawCatalog);
     if(mapped.length){
       s.catalog=mapped;
       try{
-        localStorage.setItem(C.CACHE,JSON.stringify(d.catalog||[]));
+        localStorage.setItem(C.CACHE,JSON.stringify(rawCatalog));
         localStorage.setItem(C.CACHE_TS,String(Date.now()));
       }catch{}
       renderCatalog();
     }
-    s.promos=Array.isArray(d.promotions)?d.promotions:[];
+    const promos=Array.isArray(d?.promotions)?d.promotions:Array.isArray(d?.data?.promotions)?d.data.promotions:[];
+    s.promos=promos;
     renderPromos();
     $('catalogError').classList.add('hidden');
-    clearTimeout(tm);
-    return true;
+    return !!s.catalog.length;
   }catch(e){
-    if(!s.catalog.length)showError(e.name==='AbortError'?'Google Sheets está tardando en responder. Se muestran los datos guardados mientras vuelve a intentarlo.':'Comprueba la publicación de Google Apps Script y vuelve a intentar.');
+    if(!s.catalog.length){
+      showError(e.message||'No se pudo conectar con Google Apps Script. Comprueba que el despliegue esté activo y que exista doPost.');
+    }
     return !!s.catalog.length;
   }finally{loader.classList.add('hidden')}
 }
@@ -339,11 +359,13 @@ async function buyCurrent(){
     saveUser(s.user);
     update();
     renderOrders();
-    // Vuelve a consultar el backend para que 'Mis compras' refleje inmediatamente la fila creada.
-    await dashboard();
+    s.cart=s.cart.filter(c=>!(c.id===item.id && c.vip===item.vip));
+    renderCart();
     $('checkout').classList.add('hidden');
     toast('Compra realizada correctamente.');
     switchTab('orders');
+    // Actualiza pedidos/saldo en segundo plano sin convertir una compra exitosa en error por una segunda petición lenta.
+    dashboard().catch(()=>{});
   }catch(e){
     if(e.code==='AUTH_EXPIRED'){clearSession();auth('login');toast('La sesión expiró. Inicia sesión nuevamente.')}
     else toast(e.message||'No se pudo completar la compra.');
@@ -368,10 +390,10 @@ async function checkoutCart(){
     renderOrders();
     s.cart=[];
     renderCart();
-    await dashboard();
     $('cartModal').classList.add('hidden');
     toast('Compra del carrito realizada correctamente.');
     switchTab('orders');
+    dashboard().catch(()=>{});
   }catch(e){
     if(e.code==='AUTH_EXPIRED'){clearSession();auth('login');toast('La sesión expiró. Inicia sesión nuevamente.')}
     else toast(e.message||'No se pudo completar la compra del carrito.');
