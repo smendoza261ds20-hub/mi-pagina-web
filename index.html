@@ -124,7 +124,7 @@ main{padding:30px 0 70px}.section{display:block}.section.hidden{display:none!imp
           <div class="payment-row">🟠 <b>BCP:</b> <span class="mono">28518526104002</span> <span style="color:#64748b;font-size:8px">(CCI: 00228511852610400254)</span></div>
           <div class="payment-row">🟡 <b>Binance ID:</b> <span class="mono">560926309</span> <span style="color:#64748b">|</span> <b>PayPal:</b> <span class="mono">andrechavez0008@gmail.com</span></div>
         </div>
-        <form id="topupForm" class="form-grid"><input id="amount" class="field" min="1" step=".01" type="number" placeholder="Monto enviado (S/)" required><select id="method" class="field"><option>Yape / Plin</option><option>Transferencia BCP</option><option>Binance</option><option>PayPal</option></select><input id="opCode" class="field" inputmode="numeric" placeholder="N° de Operación" required><button id="topupBtn" type="submit" class="btn btn-green"><i class="fa-solid fa-paper-plane"></i> Notificar recarga</button></form>
+        <form id="topupForm" class="form-grid"><input id="amount" class="field" min="1" step=".01" type="number" placeholder="Monto enviado (S/)" required><select id="method" class="field"><option>Yape / Plin</option><option>Transferencia BCP</option><option>Binance</option><option>PayPal</option></select><input id="voucher" class="field file" type="file" accept="image/*" required><div class="muted" style="margin-top:-4px">Sube una captura clara del pago. Se comprimirá automáticamente antes de enviarla.</div><button id="topupBtn" type="submit" class="btn btn-green"><i class="fa-solid fa-paper-plane"></i> Enviar captura</button></form>
       </div>
       <div class="panel panel-pad"><div class="panel-title">Promociones de recarga</div><div class="panel-sub">Se administran desde Google Sheets.</div><div id="promos" class="promo-list"></div></div>
     </div>
@@ -135,7 +135,7 @@ main{padding:30px 0 70px}.section{display:block}.section.hidden{display:none!imp
 <div id="cartModal" class="modal hidden"><div class="modal-card"><div style="display:flex;justify-content:space-between;align-items:center"><div class="panel-title">Tu carrito</div><button id="closeCart" class="cancel">Cerrar</button></div><div id="cartItems" class="orders-list" style="margin-top:14px"></div><div class="total-box" style="margin-top:14px"><span>Total</span><strong id="cartTotal" class="total-pen">S/ 0.00</strong></div><button id="cartBuyBtn" class="btn btn-primary" style="width:100%;margin-top:12px">Pagar carrito</button></div></div><div id="checkout" class="modal hidden"><div class="modal-card"><div class="product-head"><img id="productImg" class="modal-img" alt="Servicio"><div><div id="productName" class="modal-name">Servicio</div><div id="productType" class="modal-type">Plan</div></div></div><div class="modal-body"><div id="benefits" class="benefits-text"></div><div id="tierWrap" class="hidden"><label class="label" style="display:block;margin-bottom:7px">Tarifa</label><select id="tier" class="field"></select></div><input id="qty" class="field qty" min="1" max="99" type="number" value="1"><div class="total-box"><div><div style="font-size:9px;color:#94a3b8">Total</div><div id="totalUSD" class="total-usd">$0.00 USD</div></div><div style="text-align:right"><div id="totalPEN" class="total-pen">S/ 0.00</div><div id="after" class="after"></div></div></div><button id="addCartBtn" type="button" class="btn btn-soft" style="width:100%;padding:14px"><i class="fa-solid fa-cart-plus"></i> Agregar al carrito</button><button id="buyBtn" type="button" class="btn btn-primary" style="width:100%;padding:14px">Comprar con mi saldo</button><button id="closeCheckout" type="button" class="cancel">Cancelar</button></div></div></div>
 <a class="whatsapp" href="https://wa.me/51929683085?text=Hola%20Andre,%20quiero%20saber%20c%C3%B3mo%20tener%20acceso%20a%20los%20precios%20VIP" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
 <script>
-const C={URL:'https://script.google.com/macros/s/AKfycbyoCULpCKrNBk9iQovDbKQTDC-oRsbiFaiNfB7o1FakLN9eIkBFSdZ3LdjNtMd5Z6qCvA/exec',KEY:'andre_session_v6',USERKEY:'andre_user_v6',LEGACY_KEYS:['andre_session_v5','andre_session_v4'],LEGACY_USERS:['andre_user_v5','andre_user_v4'],CACHE:'andre_catalog_v5',CACHE_TS:'andre_catalog_v5_ts',TIMEOUT:25000,MAX:4,PLACEHOLDER:'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 320 180%22%3E%3Crect width=%22320%22 height=%22180%22 rx=%2226%22 fill=%22%23030817%22/%3E%3Ctext x=%22160%22 y=%2292%22 fill=%22%23818cf8%22 font-family=%22Arial%22 font-size=%2234%22 font-weight=%22900%22 text-anchor=%22middle%22%3EAS%3C/text%3E%3C/svg%3E'};
+const C={URL:'https://script.google.com/macros/s/AKfycbwkVPVCnWFOwkdz426Lh-hJ9L_ZjhAKpI0pm2ifDKWwNf3n9fHzHSBcjq4lj_MLk7RZSQ/exec',KEY:'andre_session_v6',USERKEY:'andre_user_v6',LEGACY_KEYS:['andre_session_v5','andre_session_v4'],LEGACY_USERS:['andre_user_v5','andre_user_v4'],CACHE:'andre_catalog_v5',CACHE_TS:'andre_catalog_v5_ts',TIMEOUT:25000,MAX:4,PLACEHOLDER:'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 320 180%22%3E%3Crect width=%22320%22 height=%22180%22 rx=%2226%22 fill=%22%23030817%22/%3E%3Ctext x=%22160%22 y=%2292%22 fill=%22%23818cf8%22 font-family=%22Arial%22 font-size=%2234%22 font-weight=%22900%22 text-anchor=%22middle%22%3EAS%3C/text%3E%3C/svg%3E'};
 let storedToken='',storedUser=null;
 try{
   storedToken=localStorage.getItem(C.KEY)||'';
@@ -283,34 +283,52 @@ function renderTopups(){$('topupCount').textContent=s.topups.length;$('topups').
 function renderOrders(){$('orders').innerHTML=s.orders.length?s.orders.map(x=>`<div class="order-item"><div class="order-meta">${esc(x.id||'')} · ${esc(x.fecha||'')}</div><div class="order-name">${esc(x.producto||'')}</div><div class="order-detail">${esc(x.total||'')} · ${esc(x.estado||'')}</div></div>`).join(''):'<div class="empty">Aún no tienes compras.</div>'}
 function openBuy(id){const p=s.catalog.find(x=>x.id===Number(id));if(!p)return;if(!s.user||!s.token){auth('login');return}s.product=p;$('productImg').src=p.imagen;$('productImg').style.display='block';$('productImg').onerror=()=>{ $('productImg').onerror=null;$('productImg').src=C.PLACEHOLDER};$('productName').textContent=p.plataforma;$('productType').textContent=p.tipo;$('benefits').textContent=p.beneficios;$('tier').innerHTML=`<option value="regular">Regular · ${money(p.precioUSD*p.tipoCambio)}</option>`;if(p.precioVIP>0&&p.precioVIP<p.precioUSD){$('tier').insertAdjacentHTML('beforeend',`<option value="vip">VIP · ${money(p.precioVIP*p.tipoCambio)}</option>`);$('tierWrap').classList.remove('hidden')}else $('tierWrap').classList.add('hidden');$('qty').value=1;calc();$('checkout').classList.remove('hidden')}
 function calc(){if(!s.product||!s.user)return;const p=s.product,q=Math.max(1,Math.min(99,Math.floor(num($('qty').value)||1))),vip=$('tier').value==='vip'&&p.precioVIP>0,usd=(vip?p.precioVIP:p.precioUSD)*q,pen=usd*(p.tipoCambio||3.3607),bal=num(s.user.saldo);$('qty').value=q;$('totalUSD').textContent=`$${usd.toFixed(2)} USD`;$('totalPEN').textContent=money(pen);$('after').textContent=`Saldo después: ${money(bal-pen)}`}
+function getCurrentLineItem(){
+  if(!s.product)return null;
+  const p=s.product;
+  const q=Math.max(1,Math.min(99,Math.floor(num($('qty').value)||1)));
+  const vip=$('tier').value==='vip'&&p.precioVIP>0;
+  const unit=Number(((vip?p.precioVIP:p.precioUSD)*(p.tipoCambio||3.3607)).toFixed(2));
+  return {id:p.id,name:p.plataforma,price:unit,promo:'',quantity:q,vip};
+}
 function addCurrentToCart(){
   if(!s.product)return;
   if(!s.user||!s.token){auth('login');return}
-  const p=s.product,q=Math.max(1,Math.min(99,Math.floor(num($('qty').value)||1))),vip=$('tier').value==='vip'&&p.precioVIP>0;
-  const item={id:p.id,name:p.plataforma,price:(vip?p.precioVIP:p.precioUSD)*(p.tipoCambio||3.3607),promo:'',quantity:q,vip};
-  const existing=s.cart.find(x=>x.id===item.id&&x.vip===item.vip);
-  if(existing)existing.quantity+=q; else s.cart.push(item);
+  const item=getCurrentLineItem();
+  if(!item)return;
+  const existing=s.cart.find(x=>String(x.id)===String(item.id)&&Boolean(x.vip)===Boolean(item.vip));
+  // Una pulsación añade la cantidad seleccionada una sola vez; no duplica accidentalmente.
+  if(existing)existing.quantity=item.quantity; else s.cart.push(item);
   renderCart();
-  toast(`Agregado al carrito: ${p.plataforma}`);
+  toast(`Agregado al carrito: ${item.name} · ${item.quantity} ud.`);
   $('checkout').classList.add('hidden');
 }
-async function buy(){
-  if(!s.user||!s.token){auth('login');return}
-  if(s.cart.length===0 && s.product){
-    const p=s.product,q=Math.max(1,Math.min(99,Math.floor(num($('qty').value)||1))),vip=$('tier').value==='vip'&&p.precioVIP>0;
-    s.cart=[{id:p.id,name:p.plataforma,price:(vip?p.precioVIP:p.precioUSD)*(p.tipoCambio||3.3607),promo:'',quantity:q,vip}];
+function cartTotal(){return Number(s.cart.reduce((a,c)=>a+num(c.price)*(Math.max(1,num(c.quantity)||1)),0).toFixed(2))}
+function currentTotal(){const item=getCurrentLineItem();return item?Number((item.price*item.quantity).toFixed(2)):0}
+async function ensureFreshBalance(required){
+  let balance=num(s.user?.saldo);
+  if(balance+0.0001<required){
+    await dashboard();
+    balance=num(s.user?.saldo);
   }
-  if(!s.cart.length)return toast('No hay productos para comprar.');
-  const total=s.cart.reduce((a,c)=>a+num(c.price)*(num(c.quantity)||1),0);
-  if(num(s.user.saldo)<total)return toast('Saldo insuficiente.');
-  const b=$('buyBtn');b.disabled=true;b.innerHTML='<i class="fa-solid fa-circle-notch fa-spin"></i> Procesando...';
+  return balance;
+}
+async function buyCurrent(){
+  if(!s.user||!s.token){auth('login');return}
+  if(!s.product)return toast('Selecciona un producto.');
+  const item=getCurrentLineItem();
+  if(!item)return toast('No se pudo preparar la compra.');
+  const total=Number((item.price*item.quantity).toFixed(2));
+  const balance=await ensureFreshBalance(total);
+  if(balance+0.0001<total)return toast(`Saldo insuficiente. Necesitas ${money(total)} y tienes ${money(balance)}.`);
+  const b=$('buyBtn');
+  b.disabled=true;
+  b.innerHTML='<i class="fa-solid fa-circle-notch fa-spin"></i> Procesando...';
   try{
-    const promo='';
-    const cart=s.cart.map(c=>({...c,promo}));
-    const d=await api('create_order',{cart});
+    const d=await api('create_order',{cart:[item]});
     if(d.user)s.user=d.user;
     if(Array.isArray(d.orders))s.orders=d.orders;
-    saveUser(s.user);update();renderOrders();s.cart=[];
+    saveUser(s.user);update();renderOrders();
     $('checkout').classList.add('hidden');
     toast('Compra realizada correctamente.');
     switchTab('orders');
@@ -319,24 +337,64 @@ async function buy(){
     else toast(e.message||'No se pudo completar la compra.');
   }finally{b.disabled=false;b.innerHTML='Comprar con mi saldo'}
 }
+async function checkoutCart(){
+  if(!s.user||!s.token){auth('login');return}
+  if(!s.cart.length)return toast('No hay productos en el carrito.');
+  const total=cartTotal();
+  const balance=await ensureFreshBalance(total);
+  if(balance+0.0001<total)return toast(`Saldo insuficiente para el carrito. Necesitas ${money(total)} y tienes ${money(balance)}.`);
+  const b=$('cartBuyBtn');
+  b.disabled=true;
+  b.innerHTML='<i class="fa-solid fa-circle-notch fa-spin"></i> Procesando...';
+  try{
+    const d=await api('create_order',{cart:s.cart.map(c=>({...c,promo:''}))});
+    if(d.user)s.user=d.user;
+    if(Array.isArray(d.orders))s.orders=d.orders;
+    saveUser(s.user);update();renderOrders();s.cart=[];renderCart();
+    $('cartModal').classList.add('hidden');
+    toast('Compra del carrito realizada correctamente.');
+    switchTab('orders');
+  }catch(e){
+    if(e.code==='AUTH_EXPIRED'){clearSession();auth('login');toast('La sesión expiró. Inicia sesión nuevamente.')}
+    else toast(e.message||'No se pudo completar la compra del carrito.');
+  }finally{b.disabled=false;b.textContent='Pagar carrito'}
+}
 
+async function imageToDataURL(file,maxSide=1400,quality=.78){
+  if(!file)return '';
+  if(!/^image\//i.test(file.type))throw Error('El archivo debe ser una imagen.');
+  if(file.size>8*1024*1024)throw Error('La captura es demasiado grande. Máximo 8 MB.');
+  const read=()=>new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=()=>reject(Error('No se pudo leer la captura.'));r.readAsDataURL(file)});
+  try{
+    const src=await read();
+    const img=await new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=()=>reject(Error('No se pudo procesar la captura.'));im.src=src});
+    const ratio=Math.min(1,maxSide/Math.max(img.naturalWidth,img.naturalHeight));
+    const canvas=document.createElement('canvas');
+    canvas.width=Math.max(1,Math.round(img.naturalWidth*ratio));
+    canvas.height=Math.max(1,Math.round(img.naturalHeight*ratio));
+    canvas.getContext('2d',{alpha:false}).drawImage(img,0,0,canvas.width,canvas.height);
+    return canvas.toDataURL('image/jpeg',quality);
+  }catch{return read()}
+}
 async function topup(e){
   e.preventDefault();
   if(!s.user||!s.token){auth('login');return}
-  const amt=num($('amount').value),opCode=$('opCode').value.trim();
+  const amt=num($('amount').value),file=$('voucher').files?.[0];
   if(!amt||amt<=0)return toast('Monto inválido.');
-  if(!opCode)return toast('Ingresa el número de operación.');
+  if(!file)return toast('Sube la captura del pago.');
   const b=$('topupBtn');b.disabled=true;b.innerHTML='<i class="fa-solid fa-circle-notch fa-spin"></i> Enviando...';
   try{
-    const d=await api('create_topup',{amount:amt,opCode,method:$('method').value});
+    const imageBase64=await imageToDataURL(file);
+    const ext=(file.type||'image/jpeg').split('/')[1]||'jpg';
+    const d=await api('create_topup',{amount:amt,method:$('method').value,imageBase64,imageName:`Recarga_${Date.now()}.${ext}`});
     $('topupForm').reset();
     if(Array.isArray(d.topups))s.topups=d.topups;
     renderTopups();
-    toast(d?.message||'Recarga notificada correctamente.');
+    toast(d?.message||'Captura enviada. Recarga pendiente de revisión.');
   }catch(e){
     if(e.code==='AUTH_EXPIRED'){clearSession();auth('login');toast('La sesión expiró. Inicia sesión nuevamente.')}
-    else toast(e.message||'No se pudo notificar la recarga.');
-  }finally{b.disabled=false;b.innerHTML='<i class="fa-solid fa-paper-plane"></i> Notificar recarga'}
+    else toast(e.message||'No se pudo enviar la captura.');
+  }finally{b.disabled=false;b.innerHTML='<i class="fa-solid fa-paper-plane"></i> Enviar captura'}
 }
 
 async function login(e){
@@ -383,7 +441,7 @@ function renderCart(){
 }
 function openCart(){renderCart();$('cartModal').classList.remove('hidden')}
 function logout(){clearSession();auth('chooser');switchTab('catalog')}
-document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('[data-auth]').forEach(b=>b.addEventListener('click',()=>auth(b.dataset.auth)));document.querySelectorAll('[data-back]').forEach(b=>b.addEventListener('click',()=>auth('chooser')));document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab,b)));document.querySelectorAll('[data-cat]').forEach(b=>b.addEventListener('click',()=>{s.cat=b.dataset.cat;document.querySelectorAll('.cat').forEach(x=>x.classList.toggle('active',x===b));renderCatalog()}));$('search').addEventListener('input',renderCatalog);$('catalog').addEventListener('click',e=>{const b=e.target.closest('[data-buy]');if(b&&!b.disabled)openBuy(b.dataset.buy)});$('catalogError').addEventListener('click',e=>{if(e.target.closest('#retry'))loadCatalog()});$('qty').addEventListener('input',calc);$('tier').addEventListener('change',calc);$('loginForm').addEventListener('submit',login);$('registerForm').addEventListener('submit',register);$('topupForm').addEventListener('submit',topup);$('buyBtn').addEventListener('click',buy);$('addCartBtn').addEventListener('click',addCurrentToCart);$('refresh').addEventListener('click',dashboard);$('logout').addEventListener('click',logout);$('brand').addEventListener('click',()=>switchTab('catalog'));$('headerLogin').addEventListener('click',()=>auth('login'));$('headerRegister').addEventListener('click',()=>auth('register'));$('closeCheckout').addEventListener('click',()=>$('checkout').classList.add('hidden'));$('checkout').addEventListener('click',e=>{if(e.target===$('checkout'))$('checkout').classList.add('hidden')});$('cartHeader')?.addEventListener('click',openCart);$('closeCart')?.addEventListener('click',()=>$('cartModal').classList.add('hidden'));$('cartBuyBtn')?.addEventListener('click',async()=>{ $('cartModal').classList.add('hidden'); await buy();});$('cartItems')?.addEventListener('click',e=>{const b=e.target.closest('[data-remove-cart]');if(b){s.cart.splice(Number(b.dataset.removeCart),1);renderCart()}});document.addEventListener('keydown',e=>{if(e.key==='Escape')$('checkout').classList.add('hidden')});update();renderCart();previewMode();if(new URLSearchParams(location.search).has('preview'))return;hydrateCatalogCache();if(!s.catalog.length)renderSkeleton(8);$('loading').classList.add('hidden');if(s.user&&s.token){update();hideAuth();dashboard().catch(()=>{})}else auth('chooser');loadCatalog();setInterval(()=>{if(s.user&&s.token&&!s.busy)dashboard().catch(()=>{})},60000)});
+document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('[data-auth]').forEach(b=>b.addEventListener('click',()=>auth(b.dataset.auth)));document.querySelectorAll('[data-back]').forEach(b=>b.addEventListener('click',()=>auth('chooser')));document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab,b)));document.querySelectorAll('[data-cat]').forEach(b=>b.addEventListener('click',()=>{s.cat=b.dataset.cat;document.querySelectorAll('.cat').forEach(x=>x.classList.toggle('active',x===b));renderCatalog()}));$('search').addEventListener('input',renderCatalog);$('catalog').addEventListener('click',e=>{const b=e.target.closest('[data-buy]');if(b&&!b.disabled)openBuy(b.dataset.buy)});$('catalogError').addEventListener('click',e=>{if(e.target.closest('#retry'))loadCatalog()});$('qty').addEventListener('input',calc);$('tier').addEventListener('change',calc);$('loginForm').addEventListener('submit',login);$('registerForm').addEventListener('submit',register);$('topupForm').addEventListener('submit',topup);$('buyBtn').addEventListener('click',buyCurrent);$('addCartBtn').addEventListener('click',addCurrentToCart);$('refresh').addEventListener('click',dashboard);$('logout').addEventListener('click',logout);$('brand').addEventListener('click',()=>switchTab('catalog'));$('headerLogin').addEventListener('click',()=>auth('login'));$('headerRegister').addEventListener('click',()=>auth('register'));$('closeCheckout').addEventListener('click',()=>$('checkout').classList.add('hidden'));$('checkout').addEventListener('click',e=>{if(e.target===$('checkout'))$('checkout').classList.add('hidden')});$('cartHeader')?.addEventListener('click',openCart);$('closeCart')?.addEventListener('click',()=>$('cartModal').classList.add('hidden'));$('cartBuyBtn')?.addEventListener('click',checkoutCart);$('cartItems')?.addEventListener('click',e=>{const b=e.target.closest('[data-remove-cart]');if(b){s.cart.splice(Number(b.dataset.removeCart),1);renderCart()}});document.addEventListener('keydown',e=>{if(e.key==='Escape')$('checkout').classList.add('hidden')});update();renderCart();previewMode();if(new URLSearchParams(location.search).has('preview'))return;hydrateCatalogCache();if(!s.catalog.length)renderSkeleton(8);$('loading').classList.add('hidden');if(s.user&&s.token){update();hideAuth();dashboard().catch(()=>{})}else auth('chooser');loadCatalog();setInterval(()=>{if(s.user&&s.token&&!s.busy)dashboard().catch(()=>{})},60000)});
 </script>
 </body>
 </html>
