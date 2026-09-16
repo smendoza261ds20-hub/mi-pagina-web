@@ -14,12 +14,9 @@
   --bg:#020617;--panel:rgba(8,18,40,.86);--panel-2:rgba(12,25,52,.92);--border:rgba(148,163,184,.14);
   --text:#f8fafc;--muted:#94a3b8;--primary:#6366f1;--violet:#8b5cf6;--cyan:#22d3ee;--green:#22c55e;--amber:#f59e0b;
   --shadow:0 24px 70px rgba(0,0,0,.34);--radius:24px;
-  /* Color dorado elegante para todos los precios */
-.price-main, .total-pen {
-  color: #fbbf24 !important;
-  text-shadow: 0 0 20px rgba(251, 191, 36, 0.25);
 }
-}
+/* Color dorado elegante para todos los precios */
+.price-main,.total-pen{color:#fbbf24!important;text-shadow:0 0 20px rgba(251,191,36,.25)}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:
  radial-gradient(circle at 8% 12%,rgba(79,70,229,.20),transparent 24%),radial-gradient(circle at 92% 18%,rgba(168,85,247,.14),transparent 23%),radial-gradient(circle at 75% 84%,rgba(34,211,238,.07),transparent 22%),linear-gradient(135deg,#020617 0%,#050816 48%,#02040c 100%);overflow-x:hidden}
 body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.28;background:linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px);background-size:36px 36px;mask-image:linear-gradient(to bottom,#000 0%,transparent 88%)}
@@ -142,6 +139,8 @@ main{padding:30px 0 70px}.section{display:block}.section.hidden{display:none!imp
 <a class="whatsapp" href="https://wa.me/51929683085?text=Hola%20Andre,%20quiero%20saber%20c%C3%B3mo%20tener%20acceso%20a%20los%20precios%20VIP" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
 <script>
 const C={URL:'https://script.google.com/macros/s/AKfycbwkVPVCnWFOwkdz426Lh-hJ9L_ZjhAKpI0pm2ifDKWwNf3n9fHzHSBcjq4lj_MLk7RZSQ/exec',KEY:'andre_session_v7',USERKEY:'andre_user_v7',LEGACY_KEYS:['andre_session_v6','andre_session_v5','andre_session_v4'],LEGACY_USERS:['andre_user_v6','andre_user_v5','andre_user_v4'],CACHE:'andre_catalog_v7',CACHE_TS:'andre_catalog_v7_ts',TIMEOUT:25000,MAX:4,PLACEHOLDER:'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 320 180%22%3E%3Crect width=%22320%22 height=%22180%22 rx=%2226%22 fill=%22%23030817%22/%3E%3Ctext x=%22160%22 y=%2292%22 fill=%22%23818cf8%22 font-family=%22Arial%22 font-size=%2234%22 font-weight=%22900%22 text-anchor=%22middle%22%3EAS%3C/text%3E%3C/svg%3E'};
+let storedToken='';
+let storedUser=null;
 try{
   storedToken=localStorage.getItem(C.KEY)||'';
   const rawUser=localStorage.getItem(C.USERKEY)||'';
@@ -149,6 +148,7 @@ try{
 }catch{}
 const s={token:String(storedToken||''),user:storedUser,catalog:[],orders:[],topups:[],promos:[],product:null,cart:[],cat:'Todos',busy:false};
 const $=id=>document.getElementById(id);
+const on=(id,event,handler,opts)=>$(id)?.addEventListener(event,handler,opts);
 const num=v=>Number(v)||0;
 const money=v=>`S/ ${num(v).toFixed(2)}`;
 const phone=v=>String(v??'').replace(/\D/g,'').slice(-9);
@@ -181,11 +181,11 @@ function clearSession(){
   }catch{}
   update();
 }
-function auth(v='chooser'){$('authGate').classList.remove('hidden');$('authChooser').classList.toggle('hidden',v!=='chooser');$('loginView').classList.toggle('hidden',v!=='login');$('registerView').classList.toggle('hidden',v!=='register')}
-function hideAuth(){$('authGate').classList.add('hidden')}
+function auth(v='chooser'){$('authGate')?.classList.remove('hidden');$('authChooser')?.classList.toggle('hidden',v!=='chooser');$('loginView')?.classList.toggle('hidden',v!=='login');$('registerView')?.classList.toggle('hidden',v!=='register')}
+function hideAuth(){$('authGate')?.classList.add('hidden')}
 function previewMode(){return false}
 function toast(msg){const n=document.createElement('div');n.textContent=msg;n.style.cssText='position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:9999;padding:11px 16px;border-radius:12px;background:#0f172a;color:#fff;border:1px solid rgba(148,163,184,.18);box-shadow:0 14px 35px rgba(0,0,0,.35);font:800 12px system-ui;max-width:min(92vw,520px);text-align:center';document.body.appendChild(n);setTimeout(()=>n.remove(),3200)}
-function showError(msg){$('catalogError').innerHTML=`<div class="error-box"><div style="font-weight:900;color:#fde68a;font-size:11px"><i class="fa-solid fa-triangle-exclamation"></i> No se pudo sincronizar ahora.</div><div style="margin-top:5px;color:#94a3b8;font-size:9px;line-height:1.5">${esc(msg||'Comprueba tu conexión e inténtalo de nuevo.')}</div><button type="button" id="retry" class="btn btn-soft" style="margin-top:12px">Reintentar</button></div>`;$('catalogError').classList.remove('hidden')}
+function showError(msg){const n=$('catalogError');if(!n)return;n.innerHTML=`<div class="error-box"><div style="font-weight:900;color:#fde68a;font-size:11px"><i class="fa-solid fa-triangle-exclamation"></i> No se pudo sincronizar ahora.</div><div style="margin-top:5px;color:#94a3b8;font-size:9px;line-height:1.5">${esc(msg||'Comprueba tu conexión e inténtalo de nuevo.')}</div><button type="button" id="retry" class="btn btn-soft" style="margin-top:12px">Reintentar</button></div>`;n.classList.remove('hidden')}
 async function api(action,data={},need=true){
   const ctrl=new AbortController();
   const tm=setTimeout(()=>ctrl.abort(),C.TIMEOUT);
@@ -225,12 +225,15 @@ function hydrateCatalogCache(){
   }
 }
 function renderSkeleton(n=8){
-  $('catalog').innerHTML=`<div class="skeleton-grid" style="grid-column:1/-1">${Array.from({length:n},()=>'<div class="skeleton-card"><div class="skel-in"><div class="skel-box"></div><div class="skel-line sm"></div><div class="skel-line lg"></div><div class="skel-line md"></div><div class="skel-line" style="margin-top:auto;width:55%;height:18px"></div></div></div>').join('')}</div>`;
+  const catalog=$('catalog');
+  if(!catalog)return;
+  catalog.innerHTML=`<div class="skeleton-grid" style="grid-column:1/-1">${Array.from({length:n},()=>'<div class="skeleton-card"><div class="skel-in"><div class="skel-box"></div><div class="skel-line sm"></div><div class="skel-line lg"></div><div class="skel-line md"></div><div class="skel-line" style="margin-top:auto;width:55%;height:18px"></div></div></div>').join('')}</div>`;
 }
 let logoObserver=null;
 function loadLogoImage(img){
   const src=img?.dataset?.src;
   if(!src)return;
+  if(img.src===src){img.removeAttribute('data-src');return}
   img.src=src;
   img.removeAttribute('data-src');
 }
@@ -252,7 +255,7 @@ async function loadCatalog(){
   let hasCache=!!s.catalog.length;
   if(!hasCache)hasCache=hydrateCatalogCache();
   if(!hasCache)renderSkeleton(8);
-  loader.classList.add('hidden');
+  loader?.classList.add('hidden');
   try{
     // Este Apps Script NO expone doGet; todo el catálogo se solicita por POST.
     // El backend que compartiste ya usa get_dashboard sin token para devolver el catálogo público.
@@ -270,19 +273,19 @@ async function loadCatalog(){
     const promos=Array.isArray(d?.promotions)?d.promotions:Array.isArray(d?.data?.promotions)?d.data.promotions:[];
     s.promos=promos;
     renderPromos();
-    $('catalogError').classList.add('hidden');
+    $('catalogError')?.classList.add('hidden');
     return !!s.catalog.length;
   }catch(e){
     if(!s.catalog.length){
       showError(e.message||'No se pudo conectar con Google Apps Script. Comprueba que el despliegue esté activo y que exista doPost.');
     }
     return !!s.catalog.length;
-  }finally{loader.classList.add('hidden')}
+  }finally{loader?.classList.add('hidden')}
 }
-function handleImageError(img){img.onerror=null;img.style.display='none';const fb=img.parentElement.querySelector('.logo-fallback');if(fb)fb.classList.remove('hidden')}
-function renderCatalog(){let a=[...s.catalog],q=norm($('search')?.value);if(s.cat!=='Todos')a=a.filter(x=>norm(x.categoria)===norm(s.cat));if(q)a=a.filter(x=>norm([x.plataforma,x.categoria,x.tipo,x.beneficios].join(' ')).includes(q));$('catalog').innerHTML=a.length?a.map(x=>{const agot=norm(x.estado)==='agotado'||norm(x.estado)==='agottado';const r=x.precioUSD*x.tipoCambio;const v=x.precioVIP*x.tipoCambio;const vip=x.precioVIP>0&&x.precioVIP<x.precioUSD;return `<article class="product-card ${agot?'sold':''}"><div class="card-top"><div class="logo-frame"><img src="${C.PLACEHOLDER}" data-src="${esc(x.imagen)}" alt="${esc(x.plataforma)}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="handleImageError(this)"><div class="logo-fallback hidden">${initials(x.plataforma)}</div><div class="shine"></div></div><span class="stock ${agot?'sold':''}"><span class="dot"></span>${esc(x.estado)}</span></div><div class="card-cat">${esc(x.categoria)}</div><h3>${esc(x.plataforma)}</h3><div class="type">${esc(x.tipo)}</div><div class="benefit-box"><i class="fa-solid fa-circle-check"></i><span>${esc(x.beneficios)}</span></div>${x.dificultades?`<div class="warning"><i class="fa-solid fa-triangle-exclamation"></i><span>${esc(x.dificultades)}</span></div>`:''}<div class="card-bottom"><div class="price-wrap">${vip?`<span class="vip-label"><i class="fa-solid fa-crown"></i> Precio VIP</span><div class="price-main vip">${money(v)}</div><span class="price-regular">Regular: ${money(r)} · $${x.precioUSD.toFixed(2)}</span>`:`<span class="price-usd">$${x.precioUSD.toFixed(2)} USD</span><div class="price-main">${money(r)}</div>`}</div><button type="button" class="buy-circle" data-buy="${x.id}" ${agot?'disabled':''} aria-label="${agot?'Agotado':'Comprar'}" title="${agot?'Agotado':'Comprar'}"><i class="fa-solid fa-arrow-right"></i></button></div></article>`}).join(''):'<div class="empty" style="grid-column:1/-1">No encontramos servicios con esos filtros.</div>';hydrateVisibleLogos()}
+function handleImageError(img){img.onerror=null;img.style.display='none';const fb=img.parentElement?.querySelector('.logo-fallback');if(fb)fb.classList.remove('hidden')}
+function renderCatalog(){const catalog=$('catalog');if(!catalog)return;let a=[...s.catalog],q=norm($('search')?.value);if(s.cat!=='Todos')a=a.filter(x=>norm(x.categoria)===norm(s.cat));if(q)a=a.filter(x=>norm([x.plataforma,x.categoria,x.tipo,x.beneficios].join(' ')).includes(q));catalog.innerHTML=a.length?a.map(x=>{const agot=norm(x.estado)==='agotado'||norm(x.estado)==='agottado';const r=x.precioUSD*x.tipoCambio;const v=x.precioVIP*x.tipoCambio;const vip=x.precioVIP>0&&x.precioVIP<x.precioUSD;return `<article class="product-card ${agot?'sold':''}"><div class="card-top"><div class="logo-frame"><img src="${C.PLACEHOLDER}" data-src="${esc(x.imagen)}" alt="${esc(x.plataforma)}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="handleImageError(this)"><div class="logo-fallback hidden">${initials(x.plataforma)}</div><div class="shine"></div></div><span class="stock ${agot?'sold':''}"><span class="dot"></span>${esc(x.estado)}</span></div><div class="card-cat">${esc(x.categoria)}</div><h3>${esc(x.plataforma)}</h3><div class="type">${esc(x.tipo)}</div><div class="benefit-box"><i class="fa-solid fa-circle-check"></i><span>${esc(x.beneficios)}</span></div>${x.dificultades?`<div class="warning"><i class="fa-solid fa-triangle-exclamation"></i><span>${esc(x.dificultades)}</span></div>`:''}<div class="card-bottom"><div class="price-wrap">${vip?`<span class="vip-label"><i class="fa-solid fa-crown"></i> Precio VIP</span><div class="price-main vip">${money(v)}</div><span class="price-regular">Regular: ${money(r)} · $${x.precioUSD.toFixed(2)}</span>`:`<span class="price-usd">$${x.precioUSD.toFixed(2)} USD</span><div class="price-main">${money(r)}</div>`}</div><button type="button" class="buy-circle" data-buy="${x.id}" ${agot?'disabled':''} aria-label="${agot?'Agotado':'Comprar'}" title="${agot?'Agotado':'Comprar'}"><i class="fa-solid fa-arrow-right"></i></button></div></article>`}).join(''):'<div class="empty" style="grid-column:1/-1">No encontramos servicios con esos filtros.</div>';hydrateVisibleLogos()}
 function switchTab(tab,source){const valid=['catalog','wallet','orders'];if(!valid.includes(tab))tab='catalog';valid.forEach(x=>$('view-'+x)?.classList.toggle('hidden',x!==tab));document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));const candidate=source?.closest?.('.nav-btn')||document.querySelector(`.nav-btn[data-tab="${tab}"]`);candidate?.classList.add('active');if(tab==='wallet'&&s.token)dashboard()}
-function update(){const logged=!!s.user,b=num(s.user?.saldo);$('headerBalance').textContent=money(b);$('walletBalance').textContent=money(b);$('name').textContent=s.user?.nombre||'-';$('phone').textContent=s.user?.telefono||'-';$('headerGreeting').textContent=logged?`Hola, ${s.user.nombre||'Cliente'}`:'Hola, Invitado';$('headerSub').textContent=logged?'Cuenta activa':'Inicia sesión para continuar';$('headerLogin').classList.toggle('hidden',logged);$('headerRegister').classList.toggle('hidden',logged);$('headerBalance').classList.toggle('hidden',!logged);$('logout').classList.toggle('hidden',!logged)}
+function update(){const logged=!!s.user,b=num(s.user?.saldo),headerBalance=$('headerBalance');if(headerBalance){headerBalance.textContent=money(b);headerBalance.classList.toggle('hidden',!logged)}if($('walletBalance'))$('walletBalance').textContent=money(b);if($('name'))$('name').textContent=s.user?.nombre||'-';if($('phone'))$('phone').textContent=s.user?.telefono||'-';if($('headerGreeting'))$('headerGreeting').textContent=logged?`Hola, ${s.user.nombre||'Cliente'}`:'Hola, Invitado';if($('headerSub'))$('headerSub').textContent=logged?'Cuenta activa':'Inicia sesión para continuar';$('headerLogin')?.classList.toggle('hidden',logged);$('headerRegister')?.classList.toggle('hidden',logged);$('logout')?.classList.toggle('hidden',!logged)}
 async function dashboard(){
   if(s.busy||!s.token)return false;
   s.busy=true;
@@ -303,16 +306,18 @@ async function dashboard(){
     return false;
   }finally{s.busy=false}
 }
-function renderPromos(){$('promos').innerHTML=s.promos.length?s.promos.map(x=>`<div class="promo-item"><b>${esc(x.nombre||'Promoción')}</b><div>${esc(x.descripcion||'')}</div></div>`).join(''):'<div class="empty">No hay promociones activas.</div>'}
-function renderTopups(){$('topupCount').textContent=s.topups.length;$('topups').innerHTML=s.topups.length?s.topups.map(x=>`<div class="topup-item" style="display:flex;justify-content:space-between;gap:14px"><div><b>${esc(x.metodo||'Recarga')} · ${money(x.monto)}</b><div>${esc(x.fecha||'')}</div></div><span class="status">${esc(x.estado||'Pendiente')}</span></div>`).join(''):'<div class="empty">No tienes recargas.</div>'}
-function renderOrders(){$('orders').innerHTML=s.orders.length?s.orders.map(x=>`<div class="order-item"><div class="order-meta">${esc(x.id||'')} · ${esc(x.fecha||'')}</div><div class="order-name">${esc(x.producto||'')}</div><div class="order-detail">${esc(x.total||'')} · ${esc(x.estado||'')}</div></div>`).join(''):'<div class="empty">Aún no tienes compras.</div>'}
-function openBuy(id){const p=s.catalog.find(x=>x.id===Number(id));if(!p)return;if(!s.user||!s.token){auth('login');return}s.product=p;$('productImg').src=p.imagen;$('productImg').style.display='block';$('productImg').onerror=()=>{ $('productImg').onerror=null;$('productImg').src=C.PLACEHOLDER};$('productName').textContent=p.plataforma;$('productType').textContent=p.tipo;$('benefits').textContent=p.beneficios;$('tier').innerHTML=`<option value="regular">Regular · ${money(p.precioUSD*p.tipoCambio)}</option>`;if(p.precioVIP>0&&p.precioVIP<p.precioUSD){$('tier').insertAdjacentHTML('beforeend',`<option value="vip">VIP · ${money(p.precioVIP*p.tipoCambio)}</option>`);$('tierWrap').classList.remove('hidden')}else $('tierWrap').classList.add('hidden');$('qty').value=1;calc();$('checkout').classList.remove('hidden')}
-function calc(){if(!s.product||!s.user)return;const p=s.product,q=Math.max(1,Math.min(99,Math.floor(num($('qty').value)||1))),vip=$('tier').value==='vip'&&p.precioVIP>0,usd=(vip?p.precioVIP:p.precioUSD)*q,pen=usd*(p.tipoCambio||3.3607),bal=num(s.user.saldo);$('qty').value=q;$('totalUSD').textContent=`$${usd.toFixed(2)} USD`;$('totalPEN').textContent=money(pen);$('after').textContent=`Saldo después: ${money(bal-pen)}`}
+function renderPromos(){const n=$('promos');if(!n)return;n.innerHTML=s.promos.length?s.promos.map(x=>`<div class="promo-item"><b>${esc(x.nombre||'Promoción')}</b><div>${esc(x.descripcion||'')}</div></div>`).join(''):'<div class="empty">No hay promociones activas.</div>'}
+function renderTopups(){if($('topupCount'))$('topupCount').textContent=s.topups.length;const n=$('topups');if(!n)return;n.innerHTML=s.topups.length?s.topups.map(x=>`<div class="topup-item" style="display:flex;justify-content:space-between;gap:14px"><div><b>${esc(x.metodo||'Recarga')} · ${money(x.monto)}</b><div>${esc(x.fecha||'')}</div></div><span class="status">${esc(x.estado||'Pendiente')}</span></div>`).join(''):'<div class="empty">No tienes recargas.</div>'}
+function renderOrders(){const n=$('orders');if(!n)return;n.innerHTML=s.orders.length?s.orders.map(x=>`<div class="order-item"><div class="order-meta">${esc(x.id||'')} · ${esc(x.fecha||'')}</div><div class="order-name">${esc(x.producto||'')}</div><div class="order-detail">${esc(x.total||'')} · ${esc(x.estado||'')}</div></div>`).join(''):'<div class="empty">Aún no tienes compras.</div>'}
+function openBuy(id){const p=s.catalog.find(x=>x.id===Number(id));if(!p)return;if(!s.user||!s.token){auth('login');return}const productImg=$('productImg'),productName=$('productName'),productType=$('productType'),benefits=$('benefits'),tier=$('tier'),tierWrap=$('tierWrap'),qty=$('qty'),checkout=$('checkout');if(!productImg||!productName||!productType||!benefits||!tier||!tierWrap||!qty||!checkout)return;s.product=p;productImg.src=p.imagen;productImg.style.display='block';productImg.onerror=()=>{productImg.onerror=null;productImg.src=C.PLACEHOLDER};productName.textContent=p.plataforma;productType.textContent=p.tipo;benefits.textContent=p.beneficios;tier.innerHTML=`<option value="regular">Regular · ${money(p.precioUSD*p.tipoCambio)}</option>`;if(p.precioVIP>0&&p.precioVIP<p.precioUSD){tier.insertAdjacentHTML('beforeend',`<option value="vip">VIP · ${money(p.precioVIP*p.tipoCambio)}</option>`);tierWrap.classList.remove('hidden')}else tierWrap.classList.add('hidden');qty.value=1;calc();checkout.classList.remove('hidden')}
+function calc(){const qty=$('qty'),tier=$('tier');if(!s.product||!s.user||!qty||!tier)return;const p=s.product,q=Math.max(1,Math.min(99,Math.floor(num(qty.value)||1))),vip=tier.value==='vip'&&p.precioVIP>0,usd=(vip?p.precioVIP:p.precioUSD)*q,pen=usd*(p.tipoCambio||3.3607),bal=num(s.user.saldo);qty.value=q;if($('totalUSD'))$('totalUSD').textContent=`$${usd.toFixed(2)} USD`;if($('totalPEN'))$('totalPEN').textContent=money(pen);if($('after'))$('after').textContent=`Saldo después: ${money(bal-pen)}`}
 function getCurrentLineItem(){
   if(!s.product)return null;
   const p=s.product;
-  const q=Math.max(1,Math.min(99,Math.floor(num($('qty').value)||1)));
-  const vip=$('tier').value==='vip'&&p.precioVIP>0;
+  const qty=$('qty'),tier=$('tier');
+  if(!qty||!tier)return null;
+  const q=Math.max(1,Math.min(99,Math.floor(num(qty.value)||1)));
+  const vip=tier.value==='vip'&&p.precioVIP>0;
   const unit=Number(((vip?p.precioVIP:p.precioUSD)*(p.tipoCambio||3.3607)).toFixed(2));
   return {id:p.id,name:p.plataforma,price:unit,promo:'',quantity:q,vip};
 }
@@ -326,7 +331,7 @@ function addCurrentToCart(){
   if(existing)existing.quantity=item.quantity; else s.cart.push(item);
   renderCart();
   toast(`Agregado al carrito: ${item.name} · ${item.quantity} ud.`);
-  $('checkout').classList.add('hidden');
+  $('checkout')?.classList.add('hidden');
 }
 function cartTotal(){return Number(s.cart.reduce((a,c)=>a+num(c.price)*(Math.max(1,num(c.quantity)||1)),0).toFixed(2))}
 function currentTotal(){const item=getCurrentLineItem();return item?Number((item.price*item.quantity).toFixed(2)):0}
@@ -365,7 +370,7 @@ async function buyCurrent(){
     renderOrders();
     s.cart=s.cart.filter(c=>!(c.id===item.id && c.vip===item.vip));
     renderCart();
-    $('checkout').classList.add('hidden');
+    $('checkout')?.classList.add('hidden');
     toast('Compra realizada correctamente.');
     switchTab('orders');
     // Actualiza pedidos/saldo en segundo plano sin convertir una compra exitosa en error por una segunda petición lenta.
@@ -394,7 +399,7 @@ async function checkoutCart(){
     renderOrders();
     s.cart=[];
     renderCart();
-    $('cartModal').classList.add('hidden');
+    $('cartModal')?.classList.add('hidden');
     toast('Compra del carrito realizada correctamente.');
     switchTab('orders');
     dashboard().catch(()=>{});
@@ -423,15 +428,17 @@ async function imageToDataURL(file,maxSide=1400,quality=.78){
 async function topup(e){
   e.preventDefault();
   if(!s.user||!s.token){auth('login');return}
-  const amt=num($('amount').value),file=$('voucher').files?.[0];
+  const amount=$('amount'),voucher=$('voucher'),method=$('method'),form=$('topupForm');
+  if(!amount||!voucher||!method||!form)return toast('No se encontró el formulario de recarga.');
+  const amt=num(amount.value),file=voucher.files?.[0];
   if(!amt||amt<=0)return toast('Monto inválido.');
   if(!file)return toast('Sube la captura del pago.');
   const b=$('topupBtn');b.disabled=true;b.innerHTML='<i class="fa-solid fa-circle-notch fa-spin"></i> Enviando...';
   try{
     const imageBase64=await imageToDataURL(file);
     const ext=(file.type||'image/jpeg').split('/')[1]||'jpg';
-    const d=await api('create_topup',{amount:amt,method:$('method').value,imageBase64,imageName:`Recarga_${Date.now()}.${ext}`});
-    $('topupForm').reset();
+    const d=await api('create_topup',{amount:amt,method:method.value,imageBase64,imageName:`Recarga_${Date.now()}.${ext}`});
+    form.reset();
     if(Array.isArray(d.topups))s.topups=d.topups;
     renderTopups();
     toast(d?.message||'Captura enviada. Recarga pendiente de revisión.');
@@ -443,7 +450,9 @@ async function topup(e){
 
 async function login(e){
   e.preventDefault();
-  const b=$('loginBtn'),username=$('loginUsername').value.trim(),pw=$('loginPassword').value;
+  const b=$('loginBtn'),loginUsername=$('loginUsername'),loginPassword=$('loginPassword');
+  if(!b||!loginUsername||!loginPassword)return toast('No se encontró el formulario de acceso.');
+  const username=loginUsername.value.trim(),pw=loginPassword.value;
   if(!username||!pw)return toast('Completa username y contraseña.');
   b.disabled=true;b.textContent='Ingresando...';
   try{
@@ -460,7 +469,9 @@ async function login(e){
 }
 async function register(e){
   e.preventDefault();
-  const b=$('registerBtn'),username=$('registerUsername').value.trim(),correo=$('registerEmail').value.trim(),pw=$('registerPassword').value,pw2=$('registerPassword2').value;
+  const b=$('registerBtn'),registerUsername=$('registerUsername'),registerEmail=$('registerEmail'),registerPassword=$('registerPassword'),registerPassword2=$('registerPassword2');
+  if(!b||!registerUsername||!registerEmail||!registerPassword||!registerPassword2)return toast('No se encontró el formulario de registro.');
+  const username=registerUsername.value.trim(),correo=registerEmail.value.trim(),pw=registerPassword.value,pw2=registerPassword2.value;
   if(username.length<3||!correo||pw.length<6||pw!==pw2)return toast('Revisa los datos del registro.');
   b.disabled=true;b.textContent='Creando...';
   try{
@@ -478,14 +489,14 @@ async function register(e){
 
 function renderCart(){
   const count=s.cart.reduce((a,c)=>a+(num(c.quantity)||1),0);
-  $('cartCount').textContent=count;
+  if($('cartCount'))$('cartCount').textContent=count;
   const total=s.cart.reduce((a,c)=>a+num(c.price)*(num(c.quantity)||1),0);
   if($('cartTotal'))$('cartTotal').textContent=money(total);
   if($('cartItems'))$('cartItems').innerHTML=s.cart.length?s.cart.map((c,i)=>`<div class="order-item" style="display:flex;justify-content:space-between;align-items:center;gap:10px"><div><div class="order-name" style="margin:0">${esc(c.name)}</div><div class="order-detail">${c.quantity} × ${money(c.price)}</div></div><button class="cancel" data-remove-cart="${i}"><i class="fa-solid fa-trash"></i></button></div>`).join(''):'<div class="empty">Tu carrito está vacío.</div>';
 }
-function openCart(){renderCart();$('cartModal').classList.remove('hidden')}
+function openCart(){renderCart();$('cartModal')?.classList.remove('hidden')}
 function logout(){clearSession();auth('chooser');switchTab('catalog')}
-document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('[data-auth]').forEach(b=>b.addEventListener('click',()=>auth(b.dataset.auth)));document.querySelectorAll('[data-back]').forEach(b=>b.addEventListener('click',()=>auth('chooser')));document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab,b)));document.querySelectorAll('[data-cat]').forEach(b=>b.addEventListener('click',()=>{s.cat=b.dataset.cat;document.querySelectorAll('.cat').forEach(x=>x.classList.toggle('active',x===b));renderCatalog()}));$('search').addEventListener('input',renderCatalog);$('catalog').addEventListener('click',e=>{const b=e.target.closest('[data-buy]');if(b&&!b.disabled)openBuy(b.dataset.buy)});$('catalogError').addEventListener('click',e=>{if(e.target.closest('#retry'))loadCatalog()});$('qty').addEventListener('input',calc);$('tier').addEventListener('change',calc);$('loginForm').addEventListener('submit',login);$('registerForm').addEventListener('submit',register);$('topupForm').addEventListener('submit',topup);$('addCartBtn').addEventListener('click',addCurrentToCart);$('refresh').addEventListener('click',dashboard);$('logout').addEventListener('click',logout);$('brand').addEventListener('click',()=>switchTab('catalog'));$('headerLogin').addEventListener('click',()=>auth('login'));$('headerRegister').addEventListener('click',()=>auth('register'));$('closeCheckout').addEventListener('click',()=>$('checkout').classList.add('hidden'));$('checkout').addEventListener('click',e=>{if(e.target===$('checkout'))$('checkout').classList.add('hidden')});$('cartHeader')?.addEventListener('click',openCart);$('closeCart')?.addEventListener('click',()=>$('cartModal').classList.add('hidden'));$('cartItems')?.addEventListener('click',e=>{const b=e.target.closest('[data-remove-cart]');if(b){s.cart.splice(Number(b.dataset.removeCart),1);renderCart()}});document.addEventListener('keydown',e=>{if(e.key==='Escape')$('checkout').classList.add('hidden')});update();renderCart();previewMode();if(new URLSearchParams(location.search).has('preview'))return;hydrateCatalogCache();if(!s.catalog.length)renderSkeleton(8);$('loading').classList.add('hidden');if(s.user&&s.token){update();hideAuth();dashboard().catch(()=>{})}else auth('chooser');loadCatalog();setInterval(()=>{if(s.user&&s.token&&!s.busy)dashboard().catch(()=>{})},60000)});
+document.addEventListener('DOMContentLoaded',()=>{let searchRaf=0;document.querySelectorAll('[data-auth]').forEach(b=>b.addEventListener('click',()=>auth(b.dataset.auth)));document.querySelectorAll('[data-back]').forEach(b=>b.addEventListener('click',()=>auth('chooser')));document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab,b)));document.querySelectorAll('[data-cat]').forEach(b=>b.addEventListener('click',()=>{s.cat=b.dataset.cat;document.querySelectorAll('.cat').forEach(x=>x.classList.toggle('active',x===b));renderCatalog()}));on('search','input',()=>{cancelAnimationFrame(searchRaf);searchRaf=requestAnimationFrame(renderCatalog)});on('catalog','click',e=>{const b=e.target.closest('[data-buy]');if(b&&!b.disabled)openBuy(b.dataset.buy)});on('catalogError','click',e=>{if(e.target.closest('#retry'))loadCatalog()});on('qty','input',calc);on('tier','change',calc);on('loginForm','submit',login);on('registerForm','submit',register);on('topupForm','submit',topup);on('addCartBtn','click',addCurrentToCart);on('refresh','click',dashboard);on('logout','click',logout);on('brand','click',()=>switchTab('catalog'));on('headerLogin','click',()=>auth('login'));on('headerRegister','click',()=>auth('register'));on('closeCheckout','click',()=>$('checkout')?.classList.add('hidden'));on('checkout','click',e=>{if(e.target===$('checkout'))$('checkout')?.classList.add('hidden')});on('cartHeader','click',openCart);on('closeCart','click',()=>$('cartModal')?.classList.add('hidden'));on('cartItems','click',e=>{const b=e.target.closest('[data-remove-cart]');if(b){s.cart.splice(Number(b.dataset.removeCart),1);renderCart()}});document.addEventListener('keydown',e=>{if(e.key==='Escape')$('checkout')?.classList.add('hidden')});update();renderCart();previewMode();if(new URLSearchParams(location.search).has('preview'))return;hydrateCatalogCache();if(!s.catalog.length)renderSkeleton(8);$('loading')?.classList.add('hidden');if(s.user&&s.token){update();hideAuth();dashboard().catch(()=>{})}else auth('chooser');loadCatalog();setInterval(()=>{if(s.user&&s.token&&!s.busy)dashboard().catch(()=>{})},60000)});
 </script>
 </body>
 </html>
