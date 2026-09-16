@@ -200,7 +200,14 @@ async function api(action,data={},need=true){
       if(/Script function not found: doGet/i.test(text))throw Error('Tu Apps Script no tiene doGet. El catálogo ya está preparado para usar POST; revisa que esté publicado como aplicación web y tenga doPost.');
       throw Error('Google Apps Script no devolvió JSON. Revisa doPost y el despliegue de la versión /exec.');
     }
-    if(j?.success===false){const err=Error(j.message||'Operación rechazada.');err.code=j.code||'';err.action=action;throw err}
+    if(j?.success===false){
+      const raw=String(j.message||'Operación rechazada.');
+      const isTrim=/Cannot read properties of undefined|reading ['\"]trim['\"]|undefined.*trim/i.test(raw);
+      const msg=isTrim
+        ? (action==='create_order' ? 'El servidor de compras necesita actualizarse. Abre el mismo Apps Script y publícalo como una nueva versión V7.' : 'El servidor necesita actualizarse. Publícalo como una nueva versión V7.')
+        : raw;
+      const err=Error(msg);err.code=j.code||'';err.action=action;throw err
+    }
     return j;
   }catch(e){
     if(e.name==='AbortError')throw Error('Google Sheets está tardando demasiado en responder.');
@@ -408,6 +415,16 @@ async function ensureFreshBalance(required){
   }
   return balance;
 }
+async function verifyBackendV7(){
+  try{
+    const d=await api('ping',{},false);
+    if(String(d?.version||'')!=='V7') throw Error('El Apps Script publicado no es V7.');
+    return true;
+  }catch(e){
+    toast('Apps Script: versión incorrecta. Publica V7 en el mismo despliegue /exec.');
+    return false;
+  }
+}
 async function buyCurrent(){
   if(!s.user||!s.token){auth('login');return}
   if(!s.product)return toast('Selecciona un producto.');
@@ -420,6 +437,7 @@ async function buyCurrent(){
   b.disabled=true;
   b.innerHTML='<i class="fa-solid fa-circle-notch fa-spin"></i> Procesando...';
   try{
+    if(!(await verifyBackendV7()))return;
     const d=await api('create_order',{
       cart:[item],
       productId:item.id,
@@ -456,6 +474,7 @@ async function checkoutCart(){
   b.disabled=true;
   b.innerHTML='<i class="fa-solid fa-circle-notch fa-spin"></i> Procesando...';
   try{
+    if(!(await verifyBackendV7()))return;
     const cart=s.cart.map(c=>({...c,promo:''}));
     const d=await api('create_order',{cart});
     if(d.user)s.user=d.user;
