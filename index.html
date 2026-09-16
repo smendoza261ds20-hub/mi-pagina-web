@@ -141,7 +141,7 @@ main{padding:30px 0 70px}.section{display:block}.section.hidden{display:none!imp
 <div id="cartModal" class="modal hidden"><div class="modal-card"><div style="display:flex;justify-content:space-between;align-items:center"><div class="panel-title">Tu carrito</div><button id="closeCart" class="cancel">Cerrar</button></div><div id="cartItems" class="orders-list" style="margin-top:14px"></div><div class="total-box" style="margin-top:14px"><span>Total</span><strong id="cartTotal" class="total-pen">S/ 0.00</strong></div><button id="cartBuyBtn" class="btn btn-primary" onclick="checkoutCart()" style="width:100%;margin-top:12px">Pagar carrito</button></div></div><div id="checkout" class="modal hidden"><div class="modal-card"><div class="product-head"><img id="productImg" class="modal-img" alt="Servicio"><div><div id="productName" class="modal-name">Servicio</div><div id="productType" class="modal-type">Plan</div></div></div><div class="modal-body"><div id="benefits" class="benefits-text"></div><div id="tierWrap" class="hidden"><label class="label" style="display:block;margin-bottom:7px">Tarifa</label><select id="tier" class="field"></select></div><input id="qty" class="field qty" min="1" max="99" type="number" value="1"><div class="total-box"><div><div style="font-size:9px;color:#94a3b8">Total</div><div id="totalUSD" class="total-usd">$0.00 USD</div></div><div style="text-align:right"><div id="totalPEN" class="total-pen">S/ 0.00</div><div id="after" class="after"></div></div></div><button id="addCartBtn" type="button" class="btn btn-soft" style="width:100%;padding:14px"><i class="fa-solid fa-cart-plus"></i> Agregar al carrito</button><button id="buyBtn" type="button" class="btn btn-primary" onclick="buyCurrent()" style="width:100%;padding:14px">Comprar con mi saldo</button><button id="closeCheckout" type="button" class="cancel">Cancelar</button></div></div></div>
 <a class="whatsapp" href="https://wa.me/51929683085?text=Hola%20Andre,%20quiero%20saber%20c%C3%B3mo%20tener%20acceso%20a%20los%20precios%20VIP" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
 <script>
-const C={URL:'https://script.google.com/macros/s/AKfycbzTHODgfrzLhKrzXpZKrfcODxMxSczHHc7tIuKC2dOlVgHBcuDkEs94hc2ymQ8B3v7SsQ/exec',KEY:'andre_session_v14',USERKEY:'andre_user_v14',LEGACY_KEYS:['andre_session_v11','andre_session_v10','andre_session_v9','andre_session_v7','andre_session_v6','andre_session_v5','andre_session_v4'],LEGACY_USERS:['andre_user_v11','andre_user_v10','andre_user_v9','andre_user_v7','andre_user_v6','andre_user_v5','andre_user_v4'],CACHE:'andre_catalog_v14',CACHE_TS:'andre_catalog_v14_ts',TIMEOUT:25000,MAX:4,PLACEHOLDER:'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 320 180%22%3E%3Crect width=%22320%22 height=%22180%22 rx=%2226%22 fill=%22%23030817%22/%3E%3Ctext x=%22160%22 y=%2292%22 fill=%22%23818cf8%22 font-family=%22Arial%22 font-size=%2234%22 font-weight=%22900%22 text-anchor=%22middle%22%3EAS%3C/text%3E%3C/svg%3E'};
+const C={URL:'https://script.google.com/macros/s/AKfycbzTHODgfrzLhKrzXpZKrfcODxMxSczHHc7tIuKC2dOlVgHBcuDkEs94hc2ymQ8B3v7SsQ/exec',KEY:'andre_session_v15',USERKEY:'andre_user_v15',LEGACY_KEYS:['andre_session_v11','andre_session_v10','andre_session_v9','andre_session_v7','andre_session_v6','andre_session_v5','andre_session_v4'],LEGACY_USERS:['andre_user_v11','andre_user_v10','andre_user_v9','andre_user_v7','andre_user_v6','andre_user_v5','andre_user_v4'],CACHE:'andre_catalog_v15',CACHE_TS:'andre_catalog_v15_ts',TIMEOUT:25000,MAX:4,PLACEHOLDER:'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 320 180%22%3E%3Crect width=%22320%22 height=%22180%22 rx=%2226%22 fill=%22%23030817%22/%3E%3Ctext x=%22160%22 y=%2292%22 fill=%22%23818cf8%22 font-family=%22Arial%22 font-size=%2234%22 font-weight=%22900%22 text-anchor=%22middle%22%3EAS%3C/text%3E%3C/svg%3E'};
 try{
   storedToken=localStorage.getItem(C.KEY)||'';
   const rawUser=localStorage.getItem(C.USERKEY)||'';
@@ -254,36 +254,35 @@ async function loadCatalog(){
   if(!hasCache)renderSkeleton(8);
   loader.classList.add('hidden');
   try{
-    // Este Apps Script NO expone doGet; todo el catálogo se solicita por POST.
-    // El backend que compartiste ya usa get_dashboard sin token para devolver el catálogo público.
-    const d=await api('get_catalog',{},false);
-    const rawCatalog=Array.isArray(d?.catalog)?d.catalog:Array.isArray(d?.data?.catalog)?d.data.catalog:[];
+    const ctrl=new AbortController();
+    const tm=setTimeout(()=>ctrl.abort(),10000);
+    const r=await fetch(C.URL+'?catalog=1&ts='+Date.now(),{method:'GET',cache:'no-store',signal:ctrl.signal});
+    clearTimeout(tm);
+    if(!r.ok)throw Error('HTTP '+r.status);
+    const d=await r.json();
+    if(d?.success===false)throw Error(d.message||'No se pudo cargar el catálogo.');
+    const rawCatalog=Array.isArray(d?.catalog)?d.catalog:[];
     const mapped=mapCatalog(rawCatalog);
     if(mapped.length){
       s.catalog=mapped;
-      try{
-        localStorage.setItem(C.CACHE,JSON.stringify(rawCatalog));
-        localStorage.setItem(C.CACHE_TS,String(Date.now()));
-      }catch{}
+      try{localStorage.setItem(C.CACHE,JSON.stringify(rawCatalog));localStorage.setItem(C.CACHE_TS,String(Date.now()))}catch{}
       renderCatalog();
     }
-    const promos=Array.isArray(d?.promotions)?d.promotions:Array.isArray(d?.data?.promotions)?d.data.promotions:[];
-    s.promos=promos;
-    renderPromos();
-    $('catalogError').classList.add('hidden');
+    s.promos=Array.isArray(d?.promotions)?d.promotions:[];
+    renderPromos(); $('catalogError').classList.add('hidden');
     return !!s.catalog.length;
   }catch(e){
-    if(e.code==='AUTH_EXPIRED' || /AUTH_EXPIRED/i.test(e.message||'')){
-      clearSession();
-      if(!s.user) auth('chooser');
-      // Este error nunca debe bloquear ni ensuciar el catálogo público.
-      $('catalogError').classList.add('hidden');
+    try{
+      const d=await api('get_catalog',{},false);
+      const rawCatalog=Array.isArray(d?.catalog)?d.catalog:[];
+      const mapped=mapCatalog(rawCatalog);
+      if(mapped.length){s.catalog=mapped;try{localStorage.setItem(C.CACHE,JSON.stringify(rawCatalog));localStorage.setItem(C.CACHE_TS,String(Date.now()))}catch{};renderCatalog();}
+      s.promos=Array.isArray(d?.promotions)?d.promotions:[]; renderPromos(); $('catalogError').classList.add('hidden');
       return !!s.catalog.length;
+    }catch(e2){
+      if(!s.catalog.length)showError(e.message||'No se pudo conectar con Google Apps Script.');
+      return false;
     }
-    if(!s.catalog.length){
-      showError(e.message||'No se pudo conectar con Google Apps Script. Comprueba el despliegue web.');
-    }
-    return !!s.catalog.length;
   }finally{loader.classList.add('hidden')}
 }
 function handleImageError(img){img.onerror=null;img.style.display='none';const fb=img.parentElement.querySelector('.logo-fallback');if(fb)fb.classList.remove('hidden')}
