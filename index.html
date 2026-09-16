@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#020617">
 <meta name="description" content="AndreStreaming - tienda digital de suscripciones y perfiles">
 <title>AndreStreaming - Tienda Premium</title>
-<meta name="as-build" content="2026-09-15-disney-code-recent-v8">
+<meta name="as-build" content="2026-09-15-direct-buy-fix-v7">
 <link rel="preconnect" href="https://cdnjs.cloudflare.com">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
@@ -141,11 +141,10 @@ main{padding:30px 0 70px}.section{display:block}.section.hidden{display:none!imp
 <div id="cartModal" class="modal hidden"><div class="modal-card"><div style="display:flex;justify-content:space-between;align-items:center"><div class="panel-title">Tu carrito</div><button id="closeCart" class="cancel">Cerrar</button></div><div id="cartItems" class="orders-list" style="margin-top:14px"></div><div class="total-box" style="margin-top:14px"><span>Total</span><strong id="cartTotal" class="total-pen">S/ 0.00</strong></div><button id="cartBuyBtn" class="btn btn-primary" onclick="checkoutCart()" style="width:100%;margin-top:12px">Pagar carrito</button></div></div><div id="checkout" class="modal hidden"><div class="modal-card"><div class="product-head"><img id="productImg" class="modal-img" alt="Servicio"><div><div id="productName" class="modal-name">Servicio</div><div id="productType" class="modal-type">Plan</div></div></div><div class="modal-body"><div id="benefits" class="benefits-text"></div><div id="tierWrap" class="hidden"><label class="label" style="display:block;margin-bottom:7px">Tarifa</label><select id="tier" class="field"></select></div><input id="qty" class="field qty" min="1" max="99" type="number" value="1"><div class="total-box"><div><div style="font-size:9px;color:#94a3b8">Total</div><div id="totalUSD" class="total-usd">$0.00 USD</div></div><div style="text-align:right"><div id="totalPEN" class="total-pen">S/ 0.00</div><div id="after" class="after"></div></div></div><button id="addCartBtn" type="button" class="btn btn-soft" style="width:100%;padding:14px"><i class="fa-solid fa-cart-plus"></i> Agregar al carrito</button><button id="buyBtn" type="button" class="btn btn-primary" onclick="buyCurrent()" style="width:100%;padding:14px">Comprar con mi saldo</button><button id="closeCheckout" type="button" class="cancel">Cancelar</button></div></div></div>
 <a class="whatsapp" href="https://wa.me/51929683085?text=Hola%20Andre,%20quiero%20saber%20c%C3%B3mo%20tener%20acceso%20a%20los%20precios%20VIP" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
 <script>
-const C={URL:'https://script.google.com/macros/s/AKfycbwkVPVCnWFOwkdz426Lh-hJ9L_ZjhAKpI0pm2ifDKWwNf3n9fHzHSBcjq4lj_MLk7RZSQ/exec',KEY:'andre_session_v6',USERKEY:'andre_user_v6',LEGACY_KEYS:['andre_session_v5','andre_session_v4'],LEGACY_USERS:['andre_user_v5','andre_user_v4'],CACHE:'andre_catalog_v6',CACHE_TS:'andre_catalog_v6_ts',TIMEOUT:25000,MAX:4,PLACEHOLDER:'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 320 180%22%3E%3Crect width=%22320%22 height=%22180%22 rx=%2226%22 fill=%22%23030817%22/%3E%3Ctext x=%22160%22 y=%2292%22 fill=%22%23818cf8%22 font-family=%22Arial%22 font-size=%2234%22 font-weight=%22900%22 text-anchor=%22middle%22%3EAS%3C/text%3E%3C/svg%3E'};
+const C={URL:'https://script.google.com/macros/s/AKfycbwkVPVCnWFOwkdz426Lh-hJ9L_ZjhAKpI0pm2ifDKWwNf3n9fHzHSBcjq4lj_MLk7RZSQ/exec',KEY:'andre_session_v7',USERKEY:'andre_user_v7',LEGACY_KEYS:['andre_session_v6','andre_session_v5','andre_session_v4'],LEGACY_USERS:['andre_user_v6','andre_user_v5','andre_user_v4'],CACHE:'andre_catalog_v7',CACHE_TS:'andre_catalog_v7_ts',TIMEOUT:25000,MAX:4,PLACEHOLDER:'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 320 180%22%3E%3Crect width=%22320%22 height=%22180%22 rx=%2226%22 fill=%22%23030817%22/%3E%3Ctext x=%22160%22 y=%2292%22 fill=%22%23818cf8%22 font-family=%22Arial%22 font-size=%2234%22 font-weight=%22900%22 text-anchor=%22middle%22%3EAS%3C/text%3E%3C/svg%3E'};
 try{
   storedToken=localStorage.getItem(C.KEY)||'';
-  if(!storedToken){for(const k of C.LEGACY_KEYS){const v=localStorage.getItem(k)||'';if(v){storedToken=v;break}}}
-  const rawUser=localStorage.getItem(C.USERKEY)||C.LEGACY_USERS.map(k=>localStorage.getItem(k)||'').find(Boolean)||'';
+  const rawUser=localStorage.getItem(C.USERKEY)||'';
   storedUser=rawUser?JSON.parse(rawUser):null;
 }catch{}
 const s={token:String(storedToken||''),user:storedUser,catalog:[],orders:[],topups:[],promos:[],product:null,cart:[],cat:'Todos',busy:false};
@@ -306,53 +305,7 @@ async function dashboard(){
 }
 function renderPromos(){$('promos').innerHTML=s.promos.length?s.promos.map(x=>`<div class="promo-item"><b>${esc(x.nombre||'Promoción')}</b><div>${esc(x.descripcion||'')}</div></div>`).join(''):'<div class="empty">No hay promociones activas.</div>'}
 function renderTopups(){$('topupCount').textContent=s.topups.length;$('topups').innerHTML=s.topups.length?s.topups.map(x=>`<div class="topup-item" style="display:flex;justify-content:space-between;gap:14px"><div><b>${esc(x.metodo||'Recarga')} · ${money(x.monto)}</b><div>${esc(x.fecha||'')}</div></div><span class="status">${esc(x.estado||'Pendiente')}</span></div>`).join(''):'<div class="empty">No tienes recargas.</div>'}
-function extractEmail(text){
-  const m=String(text||'').match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
-  return m?m[0].toLowerCase():'';
-}
-
-function renderOrders(){
-  $('orders').innerHTML=s.orders.length?s.orders.map(x=>{
-    const producto=String(x.producto||'');
-    const isDisney=/disney/i.test(producto);
-    const delivered=/entregado/i.test(String(x.estado||''));
-    const creds=String(x.credenciales||'').trim();
-    const instrucciones=String(x.instrucciones||'').trim();
-    const venc=String(x.vencimiento||'').trim();
-    const recipient=extractEmail(creds);
-    const disneyBtn=isDisney&&delivered?`<button type="button" class="btn btn-soft" style="width:100%;margin-top:10px" data-disney-email="${esc(recipient)}" data-order-id="${esc(x.id||'')}" onclick="getDisneyCode(this)"><i class="fa-solid fa-key"></i> Pedir código único Disney+</button>`:'';
-    return `<div class="order-item">
-      <div class="order-meta">${esc(x.id||'')} · ${esc(x.fecha||'')}</div>
-      <div class="order-name">${esc(producto)}</div>
-      <div class="order-detail">${esc(x.total||'')} · ${esc(x.estado||'')}</div>
-      ${creds?`<div style="margin-top:10px;padding:11px;border-radius:13px;background:rgba(2,6,23,.55);border:1px solid rgba(52,211,153,.12);font:800 10px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;color:#6ee7b7;white-space:pre-wrap;word-break:break-word">${esc(creds)}</div>`:''}
-      ${recipient&&isDisney?`<div style="margin-top:7px;font-size:9px;color:#94a3b8"><i class="fa-regular fa-envelope"></i> Código solicitado para: ${esc(recipient)}</div>`:''}
-      ${instrucciones?`<div style="margin-top:8px;padding:10px;border-radius:12px;background:rgba(245,158,11,.05);border:1px solid rgba(245,158,11,.12);font-size:9px;color:#fcd34d"><i class="fa-solid fa-circle-info"></i> ${esc(instrucciones)}</div>`:''}
-      ${venc?`<div style="margin-top:7px;font-size:9px;color:#fb7185;font-weight:900"><i class="fa-regular fa-calendar"></i> Vence: ${esc(venc)}</div>`:''}
-      ${disneyBtn}
-    </div>`
-  }).join(''):'<div class="empty">Aún no tienes compras.</div>';
-}
-
-async function getDisneyCode(btn){
-  if(!s.user||!s.token){auth('login');return}
-  if(btn?.disabled)return;
-  const recipient=String(btn?.dataset?.disneyEmail||'').trim().toLowerCase();
-  const orderId=String(btn?.dataset?.orderId||'').trim();
-  const original=btn?.innerHTML||'Pedir código único Disney+';
-  if(btn){btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-circle-notch fa-spin"></i> Buscando en correos recientes...'}
-  try{
-    const d=await api('get_disney_code',{recipient,orderId});
-    if(!d?.success)throw Error(d?.message||'No se encontró un código de Disney+ reciente.');
-    toast(`Código Disney+: ${d.code}`);
-    if(btn)btn.innerHTML=`<i class="fa-solid fa-key"></i> Código: ${esc(d.code)}`;
-  }catch(e){
-    if(e.code==='AUTH_EXPIRED'){clearSession();auth('login');toast('La sesión expiró. Inicia sesión nuevamente.')}
-    else toast(e.message||'No se pudo obtener el código Disney+.');
-    if(btn)btn.innerHTML=original;
-  }finally{if(btn&&!btn.innerHTML.includes('Código:'))btn.disabled=false}
-}
-
+function renderOrders(){$('orders').innerHTML=s.orders.length?s.orders.map(x=>`<div class="order-item"><div class="order-meta">${esc(x.id||'')} · ${esc(x.fecha||'')}</div><div class="order-name">${esc(x.producto||'')}</div><div class="order-detail">${esc(x.total||'')} · ${esc(x.estado||'')}</div></div>`).join(''):'<div class="empty">Aún no tienes compras.</div>'}
 function openBuy(id){const p=s.catalog.find(x=>x.id===Number(id));if(!p)return;if(!s.user||!s.token){auth('login');return}s.product=p;$('productImg').src=p.imagen;$('productImg').style.display='block';$('productImg').onerror=()=>{ $('productImg').onerror=null;$('productImg').src=C.PLACEHOLDER};$('productName').textContent=p.plataforma;$('productType').textContent=p.tipo;$('benefits').textContent=p.beneficios;$('tier').innerHTML=`<option value="regular">Regular · ${money(p.precioUSD*p.tipoCambio)}</option>`;if(p.precioVIP>0&&p.precioVIP<p.precioUSD){$('tier').insertAdjacentHTML('beforeend',`<option value="vip">VIP · ${money(p.precioVIP*p.tipoCambio)}</option>`);$('tierWrap').classList.remove('hidden')}else $('tierWrap').classList.add('hidden');$('qty').value=1;calc();$('checkout').classList.remove('hidden')}
 function calc(){if(!s.product||!s.user)return;const p=s.product,q=Math.max(1,Math.min(99,Math.floor(num($('qty').value)||1))),vip=$('tier').value==='vip'&&p.precioVIP>0,usd=(vip?p.precioVIP:p.precioUSD)*q,pen=usd*(p.tipoCambio||3.3607),bal=num(s.user.saldo);$('qty').value=q;$('totalUSD').textContent=`$${usd.toFixed(2)} USD`;$('totalPEN').textContent=money(pen);$('after').textContent=`Saldo después: ${money(bal-pen)}`}
 function getCurrentLineItem(){
