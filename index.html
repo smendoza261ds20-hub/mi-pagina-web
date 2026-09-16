@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#020617">
 <meta name="description" content="AndreStreaming - tienda digital de suscripciones y perfiles">
 <title>AndreStreaming - Tienda Premium</title>
-<meta name="as-build" content="2026-09-15-direct-buy-fix-v7">
+<meta name="as-build" content="2026-09-16-products-delivery-fix-v8">
 <link rel="preconnect" href="https://cdnjs.cloudflare.com">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
@@ -147,7 +147,7 @@ try{
   const rawUser=localStorage.getItem(C.USERKEY)||'';
   storedUser=rawUser?JSON.parse(rawUser):null;
 }catch{}
-const s={token:String(storedToken||''),user:storedUser,catalog:[],orders:[],topups:[],promos:[],product:null,cart:[],cat:'Todos',busy:false};
+const s={token:String(storedToken||''),user:storedUser,catalog:[],orders:[],topups:[],promos:[],product:null,cart:[],cat:'Todos',busy:false,mutationSeq:0};
 const $=id=>document.getElementById(id);
 const num=v=>Number(v)||0;
 const money=v=>`S/ ${num(v).toFixed(2)}`;
@@ -285,13 +285,27 @@ function switchTab(tab,source){const valid=['catalog','wallet','orders'];if(!val
 function update(){const logged=!!s.user,b=num(s.user?.saldo);$('headerBalance').textContent=money(b);$('walletBalance').textContent=money(b);$('name').textContent=s.user?.nombre||'-';$('phone').textContent=s.user?.telefono||'-';$('headerGreeting').textContent=logged?`Hola, ${s.user.nombre||'Cliente'}`:'Hola, Invitado';$('headerSub').textContent=logged?'Cuenta activa':'Inicia sesión para continuar';$('headerLogin').classList.toggle('hidden',logged);$('headerRegister').classList.toggle('hidden',logged);$('headerBalance').classList.toggle('hidden',!logged);$('logout').classList.toggle('hidden',!logged)}
 async function dashboard(){
   if(s.busy||!s.token)return false;
+  const requestSeq=s.mutationSeq;
   s.busy=true;
   try{
     const d=await api('get_dashboard');
     if(!d||d.success===false)throw Error(d?.message||'No se pudo cargar la cuenta.');
     if(d.user)saveUser(d.user);
-    s.orders=Array.isArray(d.orders)?d.orders:s.orders;
-    s.topups=Array.isArray(d.topups)?d.topups:s.topups;
+    // No permitimos que una consulta iniciada antes de una compra borre la compra recién creada.
+    if(requestSeq===s.mutationSeq){
+      s.orders=Array.isArray(d.orders)?d.orders:s.orders;
+      s.topups=Array.isArray(d.topups)?d.topups:s.topups;
+    }else{
+      const incoming=Array.isArray(d.orders)?d.orders:[];
+      const byId=new Map(incoming.map(o=>[String(o.id),o]));
+      s.orders.forEach(o=>byId.set(String(o.id),o));
+      s.orders=Array.from(byId.values()).sort((a,b)=>String(b.fecha||'').localeCompare(String(a.fecha||'')));
+      if(Array.isArray(d.topups)){
+        const tops=new Map(d.topups.map(o=>[String(o.id),o]));
+        s.topups.forEach(o=>tops.set(String(o.id),o));
+        s.topups=Array.from(tops.values()).slice(0,50);
+      }
+    }
     if(Array.isArray(d.promotions))s.promos=d.promotions;
     update();renderOrders();renderTopups();renderPromos();
     return true;
@@ -305,7 +319,28 @@ async function dashboard(){
 }
 function renderPromos(){$('promos').innerHTML=s.promos.length?s.promos.map(x=>`<div class="promo-item"><b>${esc(x.nombre||'Promoción')}</b><div>${esc(x.descripcion||'')}</div></div>`).join(''):'<div class="empty">No hay promociones activas.</div>'}
 function renderTopups(){$('topupCount').textContent=s.topups.length;$('topups').innerHTML=s.topups.length?s.topups.map(x=>`<div class="topup-item" style="display:flex;justify-content:space-between;gap:14px"><div><b>${esc(x.metodo||'Recarga')} · ${money(x.monto)}</b><div>${esc(x.fecha||'')}</div></div><span class="status">${esc(x.estado||'Pendiente')}</span></div>`).join(''):'<div class="empty">No tienes recargas.</div>'}
-function renderOrders(){$('orders').innerHTML=s.orders.length?s.orders.map(x=>`<div class="order-item"><div class="order-meta">${esc(x.id||'')} · ${esc(x.fecha||'')}</div><div class="order-name">${esc(x.producto||'')}</div><div class="order-detail">${esc(x.total||'')} · ${esc(x.estado||'')}</div></div>`).join(''):'<div class="empty">Aún no tienes compras.</div>'}
+function parseCredentialFields(text){
+  const t=String(text||'');
+  const get=(label)=>{const m=t.match(new RegExp('(?:^|\\|\\s)'+label+'\\s*:\\s*([^|]+)','i'));return m?m[1].trim():''};
+  return {email:get('Email|Correo'),pass:get('Pass|Contraseña'),perfil:get('Perfil'),pin:get('PIN')};
+}
+function renderOrders(){
+  const list=$('orders');
+  if(!s.orders.length){list.innerHTML='<div class=\'empty\'>Aún no tienes compras.</div>';return}
+  list.innerHTML=s.orders.map((x,i)=>{
+    const disney=isDisneyOrder(x), email=orderEmail(x), c=parseCredentialFields(x.credenciales);
+    const delivered=norm(x.estado)==='entregado';
+    return `<div class=\"order-item\">
+      <div class=\"order-meta\">${esc(x.id||'')} · ${esc(x.fecha||'')}</div>
+      <div class=\"order-name\">${esc(x.producto||'')}</div>
+      <div class=\"order-detail\">${money(x.total)} · ${esc(x.estado||'')}</div>
+      ${x.credenciales?`<div class=\"payment-row\" style=\"margin-top:10px\"><b>Datos de acceso</b><div style=\"margin-top:8px;display:grid;gap:5px;font-size:10px\">${c.email?`<div><b>Correo:</b> ${esc(c.email)}</div>`:''}${c.pass?`<div><b>Contraseña:</b> ${esc(c.pass)}</div>`:''}${c.perfil?`<div><b>Perfil:</b> ${esc(c.perfil)}</div>`:''}${c.pin?`<div><b>PIN:</b> ${esc(c.pin)}</div>`:''}${!c.email&&!c.pass&&!c.perfil&&!c.pin?`<div style=\"white-space:pre-wrap\">${esc(x.credenciales)}</div>`:''}</div></div>`:''}
+      ${x.instrucciones?`<div class=\"order-detail\" style=\"margin-top:8px\"><b>Instrucciones:</b> ${esc(x.instrucciones)}</div>`:''}
+      ${x.vencimiento?`<div class=\"order-detail\" style=\"margin-top:5px\"><b>Vence:</b> ${esc(x.vencimiento)}</div>`:''}
+      ${disney&&email&&delivered?`<div id=\"disney-code-${i}\" style=\"margin-top:10px\"><button type=\"button\" class=\"btn btn-soft\" data-disney-index=\"${i}\" onclick=\"requestDisneyCode(${i})\"><i class=\"fa-solid fa-key\"></i> Pedir código único</button><div class=\"muted\" style=\"margin-top:5px\">Buscaré el código reciente enviado a ${esc(email)}.</div></div>`:''}
+    </div>`;
+  }).join('');
+}
 function openBuy(id){const p=s.catalog.find(x=>x.id===Number(id));if(!p)return;if(!s.user||!s.token){auth('login');return}s.product=p;$('productImg').src=p.imagen;$('productImg').style.display='block';$('productImg').onerror=()=>{ $('productImg').onerror=null;$('productImg').src=C.PLACEHOLDER};$('productName').textContent=p.plataforma;$('productType').textContent=p.tipo;$('benefits').textContent=p.beneficios;$('tier').innerHTML=`<option value="regular">Regular · ${money(p.precioUSD*p.tipoCambio)}</option>`;if(p.precioVIP>0&&p.precioVIP<p.precioUSD){$('tier').insertAdjacentHTML('beforeend',`<option value="vip">VIP · ${money(p.precioVIP*p.tipoCambio)}</option>`);$('tierWrap').classList.remove('hidden')}else $('tierWrap').classList.add('hidden');$('qty').value=1;calc();$('checkout').classList.remove('hidden')}
 function calc(){if(!s.product||!s.user)return;const p=s.product,q=Math.max(1,Math.min(99,Math.floor(num($('qty').value)||1))),vip=$('tier').value==='vip'&&p.precioVIP>0,usd=(vip?p.precioVIP:p.precioUSD)*q,pen=usd*(p.tipoCambio||3.3607),bal=num(s.user.saldo);$('qty').value=q;$('totalUSD').textContent=`$${usd.toFixed(2)} USD`;$('totalPEN').textContent=money(pen);$('after').textContent=`Saldo después: ${money(bal-pen)}`}
 function getCurrentLineItem(){
@@ -360,10 +395,11 @@ async function buyCurrent(){
     });
     if(d.user)s.user=d.user;
     if(Array.isArray(d.orders))s.orders=d.orders;
+    s.mutationSeq++;
     saveUser(s.user);
     update();
     renderOrders();
-    s.cart=s.cart.filter(c=>!(c.id===item.id && c.vip===item.vip));
+    s.cart=s.cart.filter(c=>!(String(c.id)===String(item.id) && Boolean(c.vip)===Boolean(item.vip)));
     renderCart();
     $('checkout').classList.add('hidden');
     toast('Compra realizada correctamente.');
@@ -389,6 +425,7 @@ async function checkoutCart(){
     const d=await api('create_order',{cart});
     if(d.user)s.user=d.user;
     if(Array.isArray(d.orders))s.orders=d.orders;
+    s.mutationSeq++;
     saveUser(s.user);
     update();
     renderOrders();
