@@ -365,8 +365,7 @@ async function requestDisneyCode(index){
 }
 function parseCredentialFields(text){
   const t=String(text||'');
-  const get=(label)=>{const m=t.match(new RegExp('(?:^|\\|\\s)'+label+'\\s*:\\s*([^|]+)','i'));return m?m[1].trim():''};
-  return {email:get('Email|Correo'),pass:get('Pass|Contraseña'),perfil:get('Perfil'),pin:get('PIN')};
+const get=(label)=>{const m=t.match(new RegExp('(?:^|\\|\\s)(?:'+label+')\\s*:\\s*([^|]+)','i'));return (m&&m[1])?m[1].trim():''};  return {email:get('Email|Correo'),pass:get('Pass|Contraseña'),perfil:get('Perfil'),pin:get('PIN')};
 }
 function renderOrders(){
   const list=$('orders');
